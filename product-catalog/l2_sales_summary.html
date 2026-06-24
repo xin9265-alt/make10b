@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>二级品类销量汇总</title>
+<style>
+* {box-sizing:border-box;margin:0;padding:0}
+body {font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Microsoft YaHei',sans-serif;background:#f0f4f8;color:#1e293b;min-height:100vh}
+.header {background:linear-gradient(135deg,#1e3a5f 0%,#2563eb 100%);color:#fff;padding:24px 32px;box-shadow:0 2px 12px rgba(0,0,0,0.12)}
+.header h1 {font-size:22px;font-weight:700;margin-bottom:4px}
+.header .sub {font-size:13px;opacity:0.85}
+.container {max-width:1500px;margin:0 auto;padding:20px}
+.card {background:#fff;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,0.06);padding:20px;margin-bottom:16px}
+.card h2 {font-size:17px;color:#1e293b;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #e2e8f0;display:flex;align-items:center;gap:10px}
+.toolbar {display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.toolbar button,.toolbar select {padding:6px 14px;border:1px solid #cbd5e1;border-radius:6px;background:#fff;color:#475569;font-size:12px;cursor:pointer;transition:all .2s}
+.toolbar button:hover,.toolbar select:hover {border-color:#2563eb;color:#2563eb}
+.toolbar button.active {background:#2563eb;color:#fff;border-color:#2563eb}
+.toolbar .count {font-size:12px;color:#94a3b8;margin-left:auto}
+.chart-wrap {position:relative;width:100%}
+.chart-wrap canvas {display:block;max-width:100%}
+.legend-grid {display:flex;flex-wrap:wrap;gap:3px 8px;margin-top:8px;max-height:240px;overflow-y:auto;padding:4px 0}
+.legend-item {display:flex;align-items:center;gap:4px;font-size:11px;color:#475569;cursor:pointer;padding:2px 6px;border-radius:4px;transition:background .15s;user-select:none}
+.legend-item:hover {background:#f1f5f9}
+.legend-item.active {background:#dbeafe;font-weight:600}.legend-item.dimmed{opacity:.35}
+.legend-dot {width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.legend-dot-line {width:14px;height:2px;border-radius:1px;flex-shrink:0}
+.table-wrap {overflow-x:auto}
+table {width:100%;border-collapse:collapse;font-size:12px;min-width:800px}
+th,td {padding:7px 10px;text-align:right;border-bottom:1px solid #e2e8f0;white-space:nowrap}
+th {background:#f8fafc;color:#475569;font-weight:600;position:sticky;top:0;z-index:1}
+th:first-child,td:first-child {text-align:left;position:sticky;left:0;background:#fff;z-index:2;min-width:120px}
+tr:hover td {background:#f0f7ff}
+tr:hover td:first-child {background:#f0f7ff}
+.no-data {text-align:center;color:#94a3b8;padding:40px;font-size:14px}
+@media(max-width:768px){
+  .header {padding:16px 20px}
+  .header h1 {font-size:17px}
+  .container {padding:10px 8px}
+  .card {padding:14px;margin-bottom:10px}
+  table {font-size:10px;min-width:600px}
+  th,td {padding:5px 7px}
+}
+
+</style>
+</script>
+</head>
+<body>
+
+<div class="header">
+  <h1>二级品类销量汇总</h1>
+  <div class="sub">数据来源：2026年1-5月US核心SKU销量月统计 · 二级分类汇总 | 共 35 个二级品类</div>
+</div>
+
+<div class="container">
+  <div class="card">
+    <h2>
+      月度销量趋势对比
+      <span style="font-size:12px;font-weight:400;color:#94a3b8">（默认显示TOP 30二级品类）</span>
+    </h2>
+    <div class="toolbar">
+      <button id="btnTop30" class="active" onclick="setShowCount(30)">TOP 30</button>
+      <button id="btnAll" onclick="setShowCount(35)">全部(35)</button>
+      <select id="metricSel" onchange="METRIC=this.value;drawChart();buildTable()">
+        <option value="total">总销量</option>
+        <option value="amazon_US">Amazon US</option>
+        <option value="shopify_US">Shopify US</option>
+        <option value="wayfair_US">Wayfair US</option>
+        <option value="homedepot">Home Depot</option>
+        <option value="target">Target</option>
+        <option value="overstock">Overstock</option>
+        <option value="lowes">Lowes</option>
+        <option value="walmart">Walmart</option>
+      </select>
+      <span class="count" id="lineCount">显示 30 / 35</span>
+    </div>
+    <div class="chart-wrap"><canvas id="mainChart" height="550"></canvas></div>
+    <div class="legend-grid" id="legendGrid"></div>
+  </div>
+
+  <div class="card">
+    <h2>二级品类销量排行</h2>
+    <div class="table-wrap"><table id="rankTable"></table></div>
+  </div>
+</div>
+
+<script>
+// === Custom Login v3 (Email/Password) ===
+
+var CHART_DATA = [{"name":"伞座","total_monthly":[1213.0,2014.0,7792.0,12034.0,18727.0],"total_sum":41780.0,"amazon_US_monthly":[720.0,1137.0,4205.0,6177.0,9442.0],"amazon_US_sum":21681.0,"shopify_US_monthly":[187.0,297.0,1147.0,1956.0,3238.0],"shopify_US_sum":6825.0,"wayfair_US_monthly":[63.0,172.0,637.0,1101.0,1493.0],"wayfair_US_sum":3466.0,"homedepot_monthly":[126.0,200.0,1012.0,1697.0,2732.0],"homedepot_sum":5767.0,"target_monthly":[12.0,21.0,131.0,169.0,251.0],"target_sum":584.0,"overstock_monthly":[45.0,84.0,224.0,315.0,639.0],"overstock_sum":1307.0,"lowes_monthly":[39.0,69.0,313.0,416.0,598.0],"lowes_sum":1435.0,"walmart_monthly":[21.0,34.0,123.0,203.0,334.0],"walmart_sum":715.0,"mom":55.6},{"name":"小罗马伞","total_monthly":[749.0,1205.0,4706.0,6837.0,10809.0],"total_sum":24306.0,"amazon_US_monthly":[540.0,861.0,3103.0,4184.0,6606.0],"amazon_US_sum":15294.0,"shopify_US_monthly":[58.0,101.0,371.0,667.0,987.0],"shopify_US_sum":2184.0,"wayfair_US_monthly":[22.0,40.0,280.0,491.0,693.0],"wayfair_US_sum":1526.0,"homedepot_monthly":[64.0,72.0,431.0,756.0,1332.0],"homedepot_sum":2655.0,"target_monthly":[9.0,13.0,107.0,140.0,209.0],"target_sum":478.0,"overstock_monthly":[20.0,56.0,172.0,221.0,436.0],"overstock_sum":905.0,"lowes_monthly":[22.0,23.0,147.0,228.0,301.0],"lowes_sum":721.0,"walmart_monthly":[14.0,39.0,95.0,150.0,245.0],"walmart_sum":543.0,"mom":58.1},{"name":"餐椅","total_monthly":[1326.0,1731.0,4553.5,5681.0,7349.0],"total_sum":20640.5,"amazon_US_monthly":[781.0,906.0,2406.5,2860.0,3558.5],"amazon_US_sum":10512.0,"shopify_US_monthly":[161.0,224.0,578.0,672.0,1019.0],"shopify_US_sum":2654.0,"wayfair_US_monthly":[214.0,304.0,642.0,1002.0,1202.0],"wayfair_US_sum":3364.0,"homedepot_monthly":[57.0,87.0,271.0,331.0,640.0],"homedepot_sum":1386.0,"target_monthly":[11.0,0.0,53.0,53.0,79.0],"target_sum":196.0,"overstock_monthly":[42.0,160.0,325.0,439.0,461.5],"overstock_sum":1427.5,"lowes_monthly":[60.0,50.0,219.0,261.0,296.0],"lowes_sum":886.0,"walmart_monthly":[0.0,0.0,59.0,63.0,93.0],"walmart_sum":215.0,"mom":29.4},{"name":"躺床","total_monthly":[961.0,1379.0,4330.0,5393.0,7932.0],"total_sum":19995.0,"amazon_US_monthly":[719.0,971.0,2992.0,3642.0,5126.0],"amazon_US_sum":13450.0,"shopify_US_monthly":[83.0,92.0,440.0,458.0,772.0],"shopify_US_sum":1845.0,"wayfair_US_monthly":[20.0,97.0,139.0,240.0,420.0],"wayfair_US_sum":916.0,"homedepot_monthly":[67.0,85.0,409.0,633.0,1015.0],"homedepot_sum":2209.0,"target_monthly":[4.0,11.0,9.0,12.0,24.0],"target_sum":60.0,"overstock_monthly":[6.0,21.0,84.0,90.0,169.0],"overstock_sum":370.0,"lowes_monthly":[21.0,48.0,178.0,208.0,270.0],"lowes_sum":725.0,"walmart_monthly":[41.0,54.0,79.0,110.0,136.0],"walmart_sum":420.0,"mom":47.1},{"name":"大罗马伞","total_monthly":[599.0,995.0,3913.0,5422.0,8490.0],"total_sum":19419.0,"amazon_US_monthly":[325.0,458.0,1873.0,2341.0,3620.0],"amazon_US_sum":8617.0,"shopify_US_monthly":[129.0,198.0,797.0,1197.0,2047.0],"shopify_US_sum":4368.0,"wayfair_US_monthly":[41.0,133.0,393.0,650.0,848.0],"wayfair_US_sum":2065.0,"homedepot_monthly":[53.0,104.0,499.0,815.0,1278.0],"homedepot_sum":2749.0,"target_monthly":[3.0,10.0,28.0,38.0,51.0],"target_sum":130.0,"overstock_monthly":[24.0,46.0,129.0,164.0,298.0],"overstock_sum":661.0,"lowes_monthly":[11.0,37.0,139.0,133.0,211.0],"lowes_sum":531.0,"walmart_monthly":[13.0,9.0,55.0,84.0,137.0],"walmart_sum":298.0,"mom":56.6},{"name":"硬顶铁皮棚","total_monthly":[644.0,1123.0,4122.0,6161.0,5668.0],"total_sum":17718.0,"amazon_US_monthly":[288.0,497.0,1849.0,2507.0,2403.0],"amazon_US_sum":7544.0,"shopify_US_monthly":[135.0,221.0,892.0,1352.0,1283.0],"shopify_US_sum":3883.0,"wayfair_US_monthly":[26.0,43.0,137.0,257.0,207.0],"wayfair_US_sum":670.0,"homedepot_monthly":[110.0,204.0,686.0,1280.0,1018.0],"homedepot_sum":3298.0,"target_monthly":[0.0,1.0,9.0,17.0,26.0],"target_sum":53.0,"overstock_monthly":[5.0,12.0,46.0,46.0,50.0],"overstock_sum":159.0,"lowes_monthly":[72.0,133.0,483.0,677.0,639.0],"lowes_sum":2004.0,"walmart_monthly":[8.0,12.0,20.0,25.0,42.0],"walmart_sum":107.0,"mom":-8.0},{"name":"吧椅","total_monthly":[1212.0,1332.5,2485.0,3150.5,4337.5],"total_sum":12517.5,"amazon_US_monthly":[917.0,937.5,1789.0,2182.5,2866.5],"amazon_US_sum":8692.5,"shopify_US_monthly":[133.0,94.0,211.0,314.0,509.0],"shopify_US_sum":1261.0,"wayfair_US_monthly":[66.0,177.0,223.0,353.0,424.0],"wayfair_US_sum":1243.0,"homedepot_monthly":[43.0,52.0,125.0,133.0,195.0],"homedepot_sum":548.0,"target_monthly":[7.0,9.0,10.0,34.0,56.0],"target_sum":116.0,"overstock_monthly":[37.0,54.0,106.0,100.0,214.0],"overstock_sum":511.0,"lowes_monthly":[2.0,0.0,0.0,2.0,7.0],"lowes_sum":11.0,"walmart_monthly":[7.0,9.0,21.0,32.0,66.0],"walmart_sum":135.0,"mom":37.7},{"name":"大米兰伞","total_monthly":[491.0,787.0,2355.0,2807.0,3983.0],"total_sum":10423.0,"amazon_US_monthly":[429.0,666.0,1897.0,2256.0,3172.0],"amazon_US_sum":8420.0,"shopify_US_monthly":[34.0,51.0,200.0,254.0,446.0],"shopify_US_sum":985.0,"wayfair_US_monthly":[8.0,15.0,51.0,86.0,90.0],"wayfair_US_sum":250.0,"homedepot_monthly":[17.0,50.0,170.0,159.0,199.0],"homedepot_sum":595.0,"target_monthly":[0.0,0.0,3.0,7.0,12.0],"target_sum":22.0,"overstock_monthly":[0.0,0.0,2.0,5.0,5.0],"overstock_sum":12.0,"lowes_monthly":[0.0,3.0,18.0,32.0,46.0],"lowes_sum":99.0,"walmart_monthly":[3.0,2.0,14.0,8.0,13.0],"walmart_sum":40.0,"mom":41.9},{"name":"伞罩","total_monthly":[370.0,470.0,1430.0,2394.0,3575.0],"total_sum":8239.0,"amazon_US_monthly":[179.0,221.0,778.0,1205.0,1789.0],"amazon_US_sum":4172.0,"shopify_US_monthly":[156.0,175.0,471.0,851.0,1224.0],"shopify_US_sum":2877.0,"wayfair_US_monthly":[3.0,10.0,12.0,25.0,61.0],"wayfair_US_sum":111.0,"homedepot_monthly":[32.0,51.0,164.0,312.0,478.0],"homedepot_sum":1037.0,"target_monthly":[0.0,0.0,1.0,0.0,0.0],"target_sum":1.0,"overstock_monthly":[0.0,13.0,4.0,1.0,23.0],"overstock_sum":41.0,"lowes_monthly":[0.0,0.0,0.0,0.0,0.0],"lowes_sum":0.0,"walmart_monthly":[0.0,0.0,0.0,0.0,0.0],"walmart_sum":0.0,"mom":49.3},{"name":"灯饰","total_monthly":[304.0,548.0,1919.0,2599.0,2066.0],"total_sum":7436.0,"amazon_US_monthly":[130.0,204.0,847.0,1190.0,950.0],"amazon_US_sum":3321.0,"shopify_US_monthly":[64.0,111.0,427.0,634.0,547.0],"shopify_US_sum":1783.0,"wayfair_US_monthly":[14.0,9.0,31.0,53.0,35.0],"wayfair_US_sum":142.0,"homedepot_monthly":[64.0,157.0,366.0,448.0,186.0],"homedepot_sum":1221.0,"target_monthly":[0.0,0.0,0.0,0.0,0.0],"target_sum":0.0,"overstock_monthly":[10.0,17.0,59.0,43.0,47.0],"overstock_sum":176.0,"lowes_monthly":[20.0,43.0,180.0,224.0,301.0],"lowes_sum":768.0,"walmart_monthly":[2.0,7.0,9.0,7.0,0.0],"walmart_sum":25.0,"mom":-20.5},{"name":"百叶棚","total_monthly":[350.0,549.0,1636.0,2120.0,2161.0],"total_sum":6816.0,"amazon_US_monthly":[129.0,198.0,614.0,706.0,751.0],"amazon_US_sum":2398.0,"shopify_US_monthly":[106.0,172.0,460.0,683.0,626.0],"shopify_US_sum":2047.0,"wayfair_US_monthly":[23.0,40.0,108.0,154.0,138.0],"wayfair_US_sum":463.0,"homedepot_monthly":[54.0,79.0,266.0,350.0,360.0],"homedepot_sum":1109.0,"target_monthly":[2.0,2.0,9.0,21.0,8.0],"target_sum":42.0,"overstock_monthly":[8.0,11.0,53.0,66.0,66.0],"overstock_sum":204.0,"lowes_monthly":[27.0,46.0,124.0,122.0,202.0],"lowes_sum":521.0,"walmart_monthly":[1.0,1.0,2.0,18.0,10.0],"walmart_sum":32.0,"mom":1.9},{"name":"餐桌","total_monthly":[262.0,453.0,1175.0,1416.0,1991.0],"total_sum":5297.0,"amazon_US_monthly":[136.0,231.0,584.0,715.0,996.0],"amazon_US_sum":2662.0,"shopify_US_monthly":[44.0,85.0,199.0,187.0,323.0],"shopify_US_sum":838.0,"wayfair_US_monthly":[42.0,55.0,144.0,202.0,231.0],"wayfair_US_sum":674.0,"homedepot_monthly":[13.0,25.0,84.0,94.0,186.0],"homedepot_sum":402.0,"target_monthly":[3.0,0.0,14.0,14.0,21.0],"target_sum":52.0,"overstock_monthly":[9.0,41.0,78.0,115.0,128.0],"overstock_sum":371.0,"lowes_monthly":[15.0,16.0,57.0,71.0,79.0],"lowes_sum":238.0,"walmart_monthly":[0.0,0.0,15.0,18.0,27.0],"walmart_sum":60.0,"mom":40.6},{"name":"葡萄架","total_monthly":[130.0,246.0,1241.0,1726.0,1879.0],"total_sum":5222.0,"amazon_US_monthly":[65.0,121.0,768.0,1022.0,1134.0],"amazon_US_sum":3110.0,"shopify_US_monthly":[30.0,28.0,162.0,249.0,231.0],"shopify_US_sum":700.0,"wayfair_US_monthly":[17.0,27.0,105.0,197.0,215.0],"wayfair_US_sum":561.0,"homedepot_monthly":[5.0,33.0,114.0,131.0,132.0],"homedepot_sum":415.0,"target_monthly":[0.0,0.0,0.0,4.0,2.0],"target_sum":6.0,"overstock_monthly":[1.0,1.0,9.0,10.0,11.0],"overstock_sum":32.0,"lowes_monthly":[2.0,9.0,34.0,45.0,55.0],"lowes_sum":145.0,"walmart_monthly":[10.0,27.0,49.0,68.0,99.0],"walmart_sum":253.0,"mom":8.9},{"name":"中柱伞","total_monthly":[82.0,199.0,756.0,1134.0,1790.0],"total_sum":3961.0,"amazon_US_monthly":[59.0,159.0,597.0,829.0,1306.0],"amazon_US_sum":2950.0,"shopify_US_monthly":[11.0,18.0,68.0,112.0,234.0],"shopify_US_sum":443.0,"wayfair_US_monthly":[1.0,7.0,7.0,17.0,22.0],"wayfair_US_sum":54.0,"homedepot_monthly":[5.0,8.0,46.0,91.0,102.0],"homedepot_sum":252.0,"target_monthly":[1.0,0.0,3.0,9.0,6.0],"target_sum":19.0,"overstock_monthly":[1.0,1.0,0.0,3.0,9.0],"overstock_sum":14.0,"lowes_monthly":[1.0,5.0,28.0,45.0,72.0],"lowes_sum":151.0,"walmart_monthly":[3.0,1.0,7.0,28.0,39.0],"walmart_sum":78.0,"mom":57.8},{"name":"户外沙发","total_monthly":[210.0,378.0,859.0,1171.0,1262.0],"total_sum":3880.0,"amazon_US_monthly":[94.0,141.0,470.0,494.0,560.0],"amazon_US_sum":1759.0,"shopify_US_monthly":[83.0,145.0,240.0,322.0,451.0],"shopify_US_sum":1241.0,"wayfair_US_monthly":[8.0,8.0,37.0,20.0,26.0],"wayfair_US_sum":99.0,"homedepot_monthly":[1.0,34.0,28.0,111.0,47.0],"homedepot_sum":221.0,"target_monthly":[0.0,0.0,0.0,0.0,16.0],"target_sum":16.0,"overstock_monthly":[18.0,50.0,64.0,207.0,142.0],"overstock_sum":481.0,"lowes_monthly":[6.0,0.0,20.0,17.0,20.0],"lowes_sum":63.0,"walmart_monthly":[0.0,0.0,0.0,0.0,0.0],"walmart_sum":0.0,"mom":7.8},{"name":"秋千","total_monthly":[117.0,195.0,688.0,1037.0,1361.0],"total_sum":3398.0,"amazon_US_monthly":[71.0,115.0,348.0,554.0,810.0],"amazon_US_sum":1898.0,"shopify_US_monthly":[4.0,11.0,45.0,67.0,99.0],"shopify_US_sum":226.0,"wayfair_US_monthly":[16.0,13.0,88.0,126.0,156.0],"wayfair_US_sum":399.0,"homedepot_monthly":[16.0,29.0,83.0,131.0,153.0],"homedepot_sum":412.0,"target_monthly":[0.0,0.0,0.0,0.0,2.0],"target_sum":2.0,"overstock_monthly":[1.0,3.0,5.0,18.0,30.0],"overstock_sum":57.0,"lowes_monthly":[8.0,21.0,105.0,122.0,102.0],"lowes_sum":358.0,"walmart_monthly":[1.0,3.0,14.0,19.0,9.0],"walmart_sum":46.0,"mom":31.2},{"name":"百叶棚围布","total_monthly":[158.0,318.0,771.0,1011.0,689.0],"total_sum":2947.0,"amazon_US_monthly":[48.0,107.0,270.0,389.0,176.0],"amazon_US_sum":990.0,"shopify_US_monthly":[76.0,134.0,333.0,441.0,436.0],"shopify_US_sum":1420.0,"wayfair_US_monthly":[15.0,34.0,66.0,70.0,35.0],"wayfair_US_sum":220.0,"homedepot_monthly":[15.0,25.0,61.0,53.0,24.0],"homedepot_sum":178.0,"target_monthly":[0.0,0.0,0.0,0.0,0.0],"target_sum":0.0,"overstock_monthly":[4.0,18.0,41.0,58.0,18.0],"overstock_sum":139.0,"lowes_monthly":[0.0,0.0,0.0,0.0,0.0],"lowes_sum":0.0,"walmart_monthly":[0.0,0.0,0.0,0.0,0.0],"walmart_sum":0.0,"mom":-31.8},{"name":"凉棚天篷和窗帘","total_monthly":[153.0,212.0,645.0,902.0,885.0],"total_sum":2797.0,"amazon_US_monthly":[65.0,82.0,256.0,305.0,347.0],"amazon_US_sum":1055.0,"shopify_US_monthly":[37.0,61.0,164.0,261.0,214.0],"shopify_US_sum":737.0,"wayfair_US_monthly":[40.0,65.0,206.0,305.0,264.0],"wayfair_US_sum":880.0,"homedepot_monthly":[8.0,2.0,15.0,21.0,44.0],"homedepot_sum":90.0,"target_monthly":[0.0,0.0,0.0,0.0,0.0],"target_sum":0.0,"overstock_monthly":[0.0,0.0,0.0,0.0,0.0],"overstock_sum":0.0,"lowes_monthly":[0.0,0.0,0.0,0.0,0.0],"lowes_sum":0.0,"walmart_monthly":[3.0,2.0,4.0,10.0,16.0],"walmart_sum":35.0,"mom":-1.9},{"name":"百叶棚立面百叶窗","total_monthly":[123.0,180.0,436.0,593.0,511.0],"total_sum":1843.0,"amazon_US_monthly":[34.0,66.0,158.0,181.0,132.0],"amazon_US_sum":571.0,"shopify_US_monthly":[61.0,100.0,204.0,305.0,304.0],"shopify_US_sum":974.0,"wayfair_US_monthly":[4.0,7.0,19.0,31.0,31.0],"wayfair_US_sum":92.0,"homedepot_monthly":[24.0,7.0,55.0,62.0,33.0],"homedepot_sum":181.0,"target_monthly":[0.0,0.0,0.0,0.0,0.0],"target_sum":0.0,"overstock_monthly":[0.0,0.0,0.0,14.0,11.0],"overstock_sum":25.0,"lowes_monthly":[0.0,0.0,0.0,0.0,0.0],"lowes_sum":0.0,"walmart_monthly":[0.0,0.0,0.0,0.0,0.0],"walmart_sum":0.0,"mom":-13.8},{"name":"阳光房","total_monthly":[54.0,88.0,216.0,311.0,392.0],"total_sum":1061.0,"amazon_US_monthly":[14.0,31.0,38.0,67.0,98.0],"amazon_US_sum":248.0,"shopify_US_monthly":[11.0,18.0,50.0,66.0,93.0],"shopify_US_sum":238.0,"wayfair_US_monthly":[10.0,10.0,27.0,64.0,58.0],"wayfair_US_sum":169.0,"homedepot_monthly":[7.0,13.0,40.0,33.0,76.0],"homedepot_sum":169.0,"target_monthly":[1.0,0.0,0.0,0.0,0.0],"target_sum":1.0,"overstock_monthly":[8.0,15.0,32.0,41.0,34.0],"overstock_sum":130.0,"lowes_monthly":[3.0,1.0,29.0,39.0,33.0],"lowes_sum":105.0,"walmart_monthly":[0.0,0.0,0.0,1.0,0.0],"walmart_sum":1.0,"mom":26.0},{"name":"伞配件","total_monthly":[61.0,37.0,201.0,289.0,389.0],"total_sum":977.0,"amazon_US_monthly":[45.0,26.0,116.0,164.0,217.0],"amazon_US_sum":568.0,"shopify_US_monthly":[16.0,8.0,63.0,104.0,141.0],"shopify_US_sum":332.0,"wayfair_US_monthly":[0.0,0.0,4.0,9.0,11.0],"wayfair_US_sum":24.0,"homedepot_monthly":[0.0,0.0,0.0,0.0,0.0],"homedepot_sum":0.0,"target_monthly":[0.0,0.0,0.0,0.0,0.0],"target_sum":0.0,"overstock_monthly":[0.0,0.0,2.0,3.0,1.0],"overstock_sum":6.0,"lowes_monthly":[0.0,3.0,16.0,9.0,19.0],"lowes_sum":47.0,"walmart_monthly":[0.0,0.0,0.0,0.0,0.0],"walmart_sum":0.0,"mom":34.6},{"name":"休闲椅","total_monthly":[58.0,133.0,226.0,230.0,326.0],"total_sum":973.0,"amazon_US_monthly":[48.0,102.0,130.0,114.0,178.0],"amazon_US_sum":572.0,"shopify_US_monthly":[8.0,24.0,28.0,49.0,65.0],"shopify_US_sum":174.0,"wayfair_US_monthly":[0.0,0.0,14.0,6.0,7.0],"wayfair_US_sum":27.0,"homedepot_monthly":[0.0,0.0,9.0,12.0,2.0],"homedepot_sum":23.0,"target_monthly":[0.0,0.0,0.0,0.0,0.0],"target_sum":0.0,"overstock_monthly":[2.0,6.0,35.0,47.0,72.0],"overstock_sum":162.0,"lowes_monthly":[0.0,1.0,8.0,2.0,2.0],"lowes_sum":13.0,"walmart_monthly":[0.0,0.0,2.0,0.0,0.0],"walmart_sum":2.0,"mom":41.7},{"name":"大罗马伞退货件","total_monthly":[12.0,38.0,141.0,224.0,328.0],"total_sum":743.0,"amazon_US_monthly":[2.0,7.0,31.0,50.0,97.0],"amazon_US_sum":187.0,"shopify_US_monthly":[8.0,9.0,38.0,50.0,85.0],"shopify_US_sum":190.0,"wayfair_US_monthly":[0.0,2.0,11.0,7.0,15.0],"wayfair_US_sum":35.0,"homedepot_monthly":[2.0,14.0,47.0,102.0,105.0],"homedepot_sum":270.0,"target_monthly":[0.0,1.0,2.0,0.0,2.0],"target_sum":5.0,"overstock_monthly":[0.0,3.0,3.0,7.0,10.0],"overstock_sum":23.0,"lowes_monthly":[0.0,2.0,9.0,8.0,11.0],"lowes_sum":30.0,"walmart_monthly":[0.0,0.0,0.0,0.0,3.0],"walmart_sum":3.0,"mom":46.4},{"name":"百叶棚灯带","total_monthly":[53.0,67.0,193.0,221.0,178.0],"total_sum":712.0,"amazon_US_monthly":[15.0,23.0,66.0,59.0,57.0],"amazon_US_sum":220.0,"shopify_US_monthly":[23.0,27.0,70.0,102.0,81.0],"shopify_US_sum":303.0,"wayfair_US_monthly":[2.0,2.0,22.0,27.0,18.0],"wayfair_US_sum":71.0,"homedepot_monthly":[11.0,11.0,28.0,23.0,17.0],"homedepot_sum":90.0,"target_monthly":[0.0,0.0,0.0,0.0,0.0],"target_sum":0.0,"overstock_monthly":[2.0,4.0,7.0,10.0,5.0],"overstock_sum":28.0,"lowes_monthly":[0.0,0.0,0.0,0.0,0.0],"lowes_sum":0.0,"walmart_monthly":[0.0,0.0,0.0,0.0,0.0],"walmart_sum":0.0,"mom":-19.5},{"name":"花园椅","total_monthly":[14.0,32.0,82.0,120.0,284.0],"total_sum":532.0,"amazon_US_monthly":[10.0,30.0,35.0,64.0,97.0],"amazon_US_sum":236.0,"shopify_US_monthly":[4.0,2.0,46.0,36.0,99.0],"shopify_US_sum":187.0,"wayfair_US_monthly":[0.0,0.0,1.0,0.0,0.0],"wayfair_US_sum":1.0,"homedepot_monthly":[0.0,0.0,0.0,4.0,50.0],"homedepot_sum":54.0,"target_monthly":[0.0,0.0,0.0,0.0,0.0],"target_sum":0.0,"overstock_monthly":[0.0,0.0,0.0,8.0,21.0],"overstock_sum":29.0,"lowes_monthly":[0.0,0.0,0.0,8.0,17.0],"lowes_sum":25.0,"walmart_monthly":[0.0,0.0,0.0,0.0,0.0],"walmart_sum":0.0,"mom":136.7},{"name":"收纳箱","total_monthly":[50.0,50.0,97.0,116.0,134.0],"total_sum":447.0,"amazon_US_monthly":[16.0,25.0,38.0,61.0,82.0],"amazon_US_sum":222.0,"shopify_US_monthly":[25.0,16.0,30.0,35.0,20.0],"shopify_US_sum":126.0,"wayfair_US_monthly":[6.0,3.0,6.0,5.0,3.0],"wayfair_US_sum":23.0,"homedepot_monthly":[1.0,5.0,23.0,13.0,28.0],"homedepot_sum":70.0,"target_monthly":[0.0,0.0,0.0,0.0,0.0],"target_sum":0.0,"overstock_monthly":[1.0,1.0,0.0,0.0,0.0],"overstock_sum":2.0,"lowes_monthly":[0.0,0.0,0.0,0.0,0.0],"lowes_sum":0.0,"walmart_monthly":[1.0,0.0,0.0,2.0,1.0],"walmart_sum":4.0,"mom":15.5},{"name":"烧烤架","total_monthly":[19.0,43.0,106.0,114.0,73.0],"total_sum":355.0,"amazon_US_monthly":[11.0,23.0,52.0,41.0,32.0],"amazon_US_sum":159.0,"shopify_US_monthly":[4.0,5.0,20.0,22.0,11.0],"shopify_US_sum":62.0,"wayfair_US_monthly":[1.0,1.0,2.0,6.0,2.0],"wayfair_US_sum":12.0,"homedepot_monthly":[1.0,3.0,15.0,28.0,16.0],"homedepot_sum":63.0,"target_monthly":[0.0,0.0,1.0,0.0,1.0],"target_sum":2.0,"overstock_monthly":[0.0,2.0,4.0,1.0,1.0],"overstock_sum":8.0,"lowes_monthly":[2.0,9.0,12.0,16.0,9.0],"lowes_sum":48.0,"walmart_monthly":[0.0,0.0,0.0,0.0,1.0],"walmart_sum":1.0,"mom":-36.0},{"name":"吧桌","total_monthly":[39.0,21.0,54.0,84.0,68.0],"total_sum":266.0,"amazon_US_monthly":[32.0,20.0,51.0,71.0,52.0],"amazon_US_sum":226.0,"shopify_US_monthly":[2.0,1.0,2.0,3.0,3.0],"shopify_US_sum":11.0,"wayfair_US_monthly":[5.0,0.0,1.0,7.0,4.0],"wayfair_US_sum":17.0,"homedepot_monthly":[0.0,0.0,0.0,0.0,0.0],"homedepot_sum":0.0,"target_monthly":[0.0,0.0,0.0,0.0,0.0],"target_sum":0.0,"overstock_monthly":[0.0,0.0,0.0,0.0,0.0],"overstock_sum":0.0,"lowes_monthly":[0.0,0.0,0.0,0.0,0.0],"lowes_sum":0.0,"walmart_monthly":[0.0,0.0,0.0,3.0,9.0],"walmart_sum":12.0,"mom":-19.0},{"name":"家具样品","total_monthly":[6.0,16.0,50.0,59.0,74.0],"total_sum":205.0,"amazon_US_monthly":[5.0,13.0,39.0,48.0,52.0],"amazon_US_sum":157.0,"shopify_US_monthly":[0.0,3.0,6.0,8.0,19.0],"shopify_US_sum":36.0,"wayfair_US_monthly":[1.0,0.0,0.0,0.0,1.0],"wayfair_US_sum":2.0,"homedepot_monthly":[0.0,0.0,3.0,0.0,0.0],"homedepot_sum":3.0,"target_monthly":[0.0,0.0,1.0,0.0,0.0],"target_sum":1.0,"overstock_monthly":[0.0,0.0,0.0,3.0,2.0],"overstock_sum":5.0,"lowes_monthly":[0.0,0.0,0.0,0.0,0.0],"lowes_sum":0.0,"walmart_monthly":[0.0,0.0,1.0,0.0,0.0],"walmart_sum":1.0,"mom":25.4},{"name":"庭院家具罩","total_monthly":[0.0,12.0,38.0,62.0,58.0],"total_sum":170.0,"amazon_US_monthly":[0.0,12.0,38.0,62.0,58.0],"amazon_US_sum":170.0,"shopify_US_monthly":[0.0,0.0,0.0,0.0,0.0],"shopify_US_sum":0.0,"wayfair_US_monthly":[0.0,0.0,0.0,0.0,0.0],"wayfair_US_sum":0.0,"homedepot_monthly":[0.0,0.0,0.0,0.0,0.0],"homedepot_sum":0.0,"target_monthly":[0.0,0.0,0.0,0.0,0.0],"target_sum":0.0,"overstock_monthly":[0.0,0.0,0.0,0.0,0.0],"overstock_sum":0.0,"lowes_monthly":[0.0,0.0,0.0,0.0,0.0],"lowes_sum":0.0,"walmart_monthly":[0.0,0.0,0.0,0.0,0.0],"walmart_sum":0.0,"mom":-6.5},{"name":"户外沙发配件","total_monthly":[1.0,1.0,6.0,7.0,12.0],"total_sum":27.0,"amazon_US_monthly":[1.0,0.0,6.0,4.0,6.0],"amazon_US_sum":17.0,"shopify_US_monthly":[0.0,1.0,0.0,3.0,4.0],"shopify_US_sum":8.0,"wayfair_US_monthly":[0.0,0.0,0.0,0.0,0.0],"wayfair_US_sum":0.0,"homedepot_monthly":[0.0,0.0,0.0,0.0,0.0],"homedepot_sum":0.0,"target_monthly":[0.0,0.0,0.0,0.0,2.0],"target_sum":2.0,"overstock_monthly":[0.0,0.0,0.0,0.0,0.0],"overstock_sum":0.0,"lowes_monthly":[0.0,0.0,0.0,0.0,0.0],"lowes_sum":0.0,"walmart_monthly":[0.0,0.0,0.0,0.0,0.0],"walmart_sum":0.0,"mom":71.4},{"name":"吊椅","total_monthly":[3.0,5.0,4.0,7.0,0.0],"total_sum":19.0,"amazon_US_monthly":[3.0,5.0,4.0,7.0,0.0],"amazon_US_sum":19.0,"shopify_US_monthly":[0.0,0.0,0.0,0.0,0.0],"shopify_US_sum":0.0,"wayfair_US_monthly":[0.0,0.0,0.0,0.0,0.0],"wayfair_US_sum":0.0,"homedepot_monthly":[0.0,0.0,0.0,0.0,0.0],"homedepot_sum":0.0,"target_monthly":[0.0,0.0,0.0,0.0,0.0],"target_sum":0.0,"overstock_monthly":[0.0,0.0,0.0,0.0,0.0],"overstock_sum":0.0,"lowes_monthly":[0.0,0.0,0.0,0.0,0.0],"lowes_sum":0.0,"walmart_monthly":[0.0,0.0,0.0,0.0,0.0],"walmart_sum":0.0,"mom":-100.0},{"name":"靠墙棚","total_monthly":[0.0,0.0,0.0,0.0,0.0],"total_sum":0.0,"amazon_US_monthly":[0.0,0.0,0.0,0.0,0.0],"amazon_US_sum":0.0,"shopify_US_monthly":[0.0,0.0,0.0,0.0,0.0],"shopify_US_sum":0.0,"wayfair_US_monthly":[0.0,0.0,0.0,0.0,0.0],"wayfair_US_sum":0.0,"homedepot_monthly":[0.0,0.0,0.0,0.0,0.0],"homedepot_sum":0.0,"target_monthly":[0.0,0.0,0.0,0.0,0.0],"target_sum":0.0,"overstock_monthly":[0.0,0.0,0.0,0.0,0.0],"overstock_sum":0.0,"lowes_monthly":[0.0,0.0,0.0,0.0,0.0],"lowes_sum":0.0,"walmart_monthly":[0.0,0.0,0.0,0.0,0.0],"walmart_sum":0.0,"mom":0},{"name":"靠墙棚灯带","total_monthly":[0.0,0.0,0.0,0.0,0.0],"total_sum":0.0,"amazon_US_monthly":[0.0,0.0,0.0,0.0,0.0],"amazon_US_sum":0.0,"shopify_US_monthly":[0.0,0.0,0.0,0.0,0.0],"shopify_US_sum":0.0,"wayfair_US_monthly":[0.0,0.0,0.0,0.0,0.0],"wayfair_US_sum":0.0,"homedepot_monthly":[0.0,0.0,0.0,0.0,0.0],"homedepot_sum":0.0,"target_monthly":[0.0,0.0,0.0,0.0,0.0],"target_sum":0.0,"overstock_monthly":[0.0,0.0,0.0,0.0,0.0],"overstock_sum":0.0,"lowes_monthly":[0.0,0.0,0.0,0.0,0.0],"lowes_sum":0.0,"walmart_monthly":[0.0,0.0,0.0,0.0,0.0],"walmart_sum":0.0,"mom":0},{"name":"靠墙棚蜂巢帘","total_monthly":[0.0,0.0,0.0,0.0,0.0],"total_sum":0.0,"amazon_US_monthly":[0.0,0.0,0.0,0.0,0.0],"amazon_US_sum":0.0,"shopify_US_monthly":[0.0,0.0,0.0,0.0,0.0],"shopify_US_sum":0.0,"wayfair_US_monthly":[0.0,0.0,0.0,0.0,0.0],"wayfair_US_sum":0.0,"homedepot_monthly":[0.0,0.0,0.0,0.0,0.0],"homedepot_sum":0.0,"target_monthly":[0.0,0.0,0.0,0.0,0.0],"target_sum":0.0,"overstock_monthly":[0.0,0.0,0.0,0.0,0.0],"overstock_sum":0.0,"lowes_monthly":[0.0,0.0,0.0,0.0,0.0],"lowes_sum":0.0,"walmart_monthly":[0.0,0.0,0.0,0.0,0.0],"walmart_sum":0.0,"mom":0}];
+
+var METRIC='total';
+var HIGHLIGHTED=null;
+var SHOW_COUNT=30;
+var MAX_COUNT=CHART_DATA.length;
+
+function getValues(item){
+  if(METRIC==='total') return item.total_monthly;
+  if(METRIC==='amazon_US') return item.amazon_US_monthly;
+  if(METRIC==='shopify_US') return item.shopify_US_monthly;
+  if(METRIC==='wayfair_US') return item.wayfair_US_monthly;
+  if(METRIC==='homedepot') return item.homedepot_monthly;
+  if(METRIC==='target') return item.target_monthly;
+  if(METRIC==='overstock') return item.overstock_monthly;
+  if(METRIC==='lowes') return item.lowes_monthly;
+  if(METRIC==='walmart') return item.walmart_monthly;
+  return item.total_monthly;
+}
+function getTotal(item){
+  if(METRIC==='total') return item.total_sum;
+  if(METRIC==='amazon_US') return item.amazon_US_sum;
+  if(METRIC==='shopify_US') return item.shopify_US_sum;
+  if(METRIC==='wayfair_US') return item.wayfair_US_sum;
+  if(METRIC==='homedepot') return item.homedepot_sum;
+  if(METRIC==='target') return item.target_sum;
+  if(METRIC==='overstock') return item.overstock_sum;
+  if(METRIC==='lowes') return item.lowes_sum;
+  if(METRIC==='walmart') return item.walmart_sum;
+  return item.total_sum;
+}
+
+SHOW_COUNT=30;
+MAX_COUNT=35;
+
+var canvas=document.getElementById('mainChart');
+var ctx=canvas.getContext('2d');
+var W,H;
+
+function resize(){
+  var wrap=canvas.parentElement;
+  var w=wrap.clientWidth;
+  var ratio=window.devicePixelRatio||1;
+  canvas.width=w*ratio;
+  canvas.height=550*ratio;
+  canvas.style.width=w+'px';
+  canvas.style.height='550px';
+  ctx.setTransform(ratio,0,0,ratio,0,0);
+  W=w; H=550;
+  drawChart();
+}
+
+function drawChart(){
+  ctx.clearRect(0,0,W*2,H*2);
+  var items=[];
+  for(var i=0;i<MAX_COUNT;i++){
+    if(i>=CHART_DATA.length) break;
+    items.push(CHART_DATA[i]);
+    if(items.length>=SHOW_COUNT) break;
+  }
+  if(items.length===0){
+    ctx.fillStyle='#94a3b8'; ctx.font='14px sans-serif';
+    ctx.textAlign='center'; ctx.fillText('暂无数据',W/2,H/2);
+    return;
+  }
+  var pad={top:40,right:30,bottom:60,left:70};
+  var pw=W-pad.left-pad.right;
+  var ph=H-pad.top-pad.bottom;
+  var months=['1月','2月','3月','4月','5月'];
+  
+  // Find Y range
+  var maxY=0;
+  items.forEach(function(it){
+    var vals=getValues(it);
+    vals.forEach(function(v){if(v>maxY) maxY=v;});
+  });
+  if(maxY===0) maxY=10;
+  var ySteps=5;
+  var yStep=Math.ceil(maxY/ySteps/100)*100;
+  if(yStep===0) yStep=Math.ceil(maxY/ySteps/10)*10;
+  if(yStep===0) yStep=1;
+  maxY=yStep*ySteps;
+  
+  // Grid
+  ctx.strokeStyle='#e2e8f0'; ctx.lineWidth=1;
+  ctx.fillStyle='#94a3b8'; ctx.font='11px sans-serif'; ctx.textAlign='right';
+  for(var i=0;i<=ySteps;i++){
+    var y=pad.top+(ph/ySteps)*i;
+    var val=maxY-(maxY/ySteps)*i;
+    ctx.beginPath(); ctx.moveTo(pad.left,y); ctx.lineTo(W-pad.right,y); ctx.stroke();
+    ctx.fillText(Math.round(val).toLocaleString(),pad.left-8,y+4);
+  }
+  
+  // X labels
+  ctx.textAlign='center'; ctx.fillStyle='#64748b';
+  for(var i=0;i<5;i++){
+    var x=pad.left+(pw/4)*i;
+    ctx.fillText(months[i],x,H-pad.bottom+20);
+  }
+  
+  // Lines
+  items.forEach(function(it,idx){
+    var vals=getValues(it);
+    var color='#7C189F';
+    var alpha=(HIGHLIGHTED&&HIGHLIGHTED!==it.name)?0.15:1;
+    ctx.globalAlpha=alpha;
+    ctx.strokeStyle=color; ctx.lineWidth=(HIGHLIGHTED===it.name)?4:2.8;
+    ctx.beginPath();
+    for(var i=0;i<5;i++){
+      var x=pad.left+(pw/4)*i;
+      var y=pad.top+ph-(vals[i]/maxY)*ph;
+      if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    }
+    ctx.stroke();
+    // Dots
+    for(var i=0;i<5;i++){
+      var x=pad.left+(pw/4)*i;
+      var y=pad.top+ph-(vals[i]/maxY)*ph;
+      ctx.fillStyle=color; ctx.beginPath(); ctx.arc(x,y,4.5,0,Math.PI*2); ctx.fill();
+    }
+  });
+  ctx.globalAlpha=1;
+  
+  // Legend
+  var legendDiv=document.getElementById('legendGrid');
+  var html='';
+  items.forEach(function(it,idx){
+    var color='#7C189F';
+    var cls=HIGHLIGHTED?(HIGHLIGHTED===it.name?' active':' dimmed'):'';
+    html+='<div class="legend-item'+cls+'" onclick="toggleLegend(\''+it.name.replace(/'/g,"\'")+'\')">';
+    html+='<span class="legend-dot" style="background:'+color+'"></span>';
+    html+=it.name+'</div>';
+  });
+  legendDiv.innerHTML=html;
+  
+  document.getElementById('lineCount').textContent='显示 '+items.length+' / '+MAX_COUNT;
+}
+
+function toggleLegend(name){
+  HIGHLIGHTED=(HIGHLIGHTED===name)?null:name;
+  drawChart();
+}
+
+function buildTable(){
+  var items=[];
+  for(var i=0;i<CHART_DATA.length;i++){
+    var it=CHART_DATA[i];
+    items.push({
+      name:it.name,
+      month1:getValues(it)[0],
+      month2:getValues(it)[1],
+      month3:getValues(it)[2],
+      month4:getValues(it)[3],
+      month5:getValues(it)[4],
+      total:getTotal(it),
+      mom:it.mom
+    });
+  }
+  items.sort(function(a,b){return b.total-a.total;});
+  var h='<thead><tr>';
+  h+='<th>#</th><th>品类名称</th>';
+  h+='<th>1月销量</th><th>2月销量</th><th>3月销量</th><th>4月销量</th><th>5月销量</th>';
+  h+='<th>合计</th>';
+  h+='</tr></thead><tbody>';
+  
+  var rank=1,prevTotal=-1,displayRank=1;
+  items.forEach(function(it,idx){
+    if(it.total!==prevTotal){displayRank=rank;}
+    prevTotal=it.total;
+    h+='<tr>';
+    h+='<td>'+displayRank+'</td>';
+    h+='<td>'+it.name+'</td>';
+    h+='<td>'+it.month1.toLocaleString()+'</td>';
+    h+='<td>'+it.month2.toLocaleString()+'</td>';
+    h+='<td>'+it.month3.toLocaleString()+'</td>';
+    h+='<td>'+it.month4.toLocaleString()+'</td>';
+    h+='<td>'+it.month5.toLocaleString()+'</td>';
+    h+='<td>'+Math.round(it.total).toLocaleString()+'</td>';
+    h+='</tr>';
+    rank++;
+  });
+  h+='</tbody>';
+  document.getElementById('rankTable').innerHTML=h;
+}
+
+function setShowCount(n){
+  SHOW_COUNT=n; MAX_COUNT=n;
+  document.querySelectorAll('.toolbar button').forEach(function(b){b.classList.remove('active');});
+  var btnId='btnAll';
+  if(n===30) btnId='btnTop30';
+  else if(n===50) btnId='btnTop50';
+  else if(n===100) btnId='btnTop100';
+  var btn=document.getElementById(btnId);
+  if(btn) btn.classList.add('active');
+  drawChart();
+}
+
+function redrawChart(){drawChart();}
+
+canvas.addEventListener('click',function(e){if(e.target===canvas){HIGHLIGHTED=null;drawChart();}});
+window.addEventListener('resize',resize);
+
+resize();
+buildTable();
+</script>
+</body>
+</html>
