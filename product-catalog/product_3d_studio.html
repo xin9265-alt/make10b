@@ -3,198 +3,254 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Purple Leaf 3D Product Studio</title>
+<title>Purple Leaf 模块化家具配置器</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans SC",sans-serif;background:#0d1117;color:#c9d1d9;overflow:hidden;height:100vh;display:flex}
 a{color:inherit;text-decoration:none}
-
-/* Scrollbar */
 ::-webkit-scrollbar{width:5px}
 ::-webkit-scrollbar-track{background:#161b22}
 ::-webkit-scrollbar-thumb{background:#30363d;border-radius:3px}
-::-webkit-scrollbar-thumb:hover{background:#484f58}
 
 /* Left Panel */
-.panel{width:320px;min-width:320px;background:#1a1a2e;display:flex;flex-direction:column;border-right:1px solid #2d2d5e;z-index:10;overflow:hidden}
-.panel-header{padding:16px 20px;background:linear-gradient(135deg,#16213e,#1a1a2e);border-bottom:1px solid #2d2d5e;display:flex;align-items:center;gap:10px}
-.panel-header h1{font-size:18px;font-weight:700;color:#e0e0ff;letter-spacing:0.5px}
-.panel-header .logo{width:32px;height:32px;background:linear-gradient(135deg,#6c63ff,#48c6ef);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
-.panel-body{flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:16px}
+.panel{width:340px;min-width:340px;background:#111827;display:flex;flex-direction:column;border-right:1px solid #1f2937;z-index:10;overflow:hidden}
+.panel-header{padding:14px 18px;background:#0f172a;border-bottom:1px solid #1f2937;display:flex;align-items:center;gap:10px}
+.panel-header .logo{width:34px;height:34px;background:linear-gradient(135deg,#2563eb,#7c3aed);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.panel-header .logo svg{width:18px;height:18px;fill:#fff}
+.panel-header h1{font-size:16px;font-weight:700;color:#f1f5f9}
+.panel-header .back-link{font-size:12px;color:#64748b;margin-left:auto;transition:color .2s}
+.panel-header .back-link:hover{color:#94a3b8}
+.panel-body{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:16px}
 
-/* Section */
-.section-title{font-size:12px;font-weight:600;text-transform:uppercase;color:#8b8ba7;letter-spacing:1.5px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
-.section-title::before{content:'';display:block;width:3px;height:14px;background:linear-gradient(180deg,#6c63ff,#48c6ef);border-radius:2px}
+.section-title{font-size:11px;font-weight:600;text-transform:uppercase;color:#64748b;letter-spacing:1.5px;display:flex;align-items:center;gap:6px}
+.section-title::before{content:'';width:3px;height:12px;background:#2563eb;border-radius:2px}
 
-/* Upload Zone */
-.upload-zone{border:2px dashed #3d3d6e;border-radius:12px;padding:24px 16px;text-align:center;cursor:pointer;transition:all .25s;background:#16213e40}
-.upload-zone:hover,.upload-zone.drag-over{border-color:#6c63ff;background:#6c63ff15;transform:translateY(-1px);box-shadow:0 4px 20px #6c63ff20}
-.upload-zone .upload-icon{font-size:32px;margin-bottom:8px;display:block;opacity:.7}
-.upload-zone .upload-text{font-size:13px;color:#a0a0c0}
-.upload-zone .upload-hint{font-size:11px;color:#6b6b8a;margin-top:6px}
-.upload-zone input[type=file]{display:none}
+/* Module Cards */
+.module-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.module-card{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:12px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.module-card:hover{background:#1e3a5f;border-color:#2563eb;transform:translateY(-1px)}
+.module-card .mod-icon{font-size:28px;line-height:1}
+.module-card .mod-name{font-size:12px;font-weight:600;color:#e2e8f0}
+.module-card .mod-price{font-size:11px;color:#64748b}
+.module-card .mod-add{width:24px;height:24px;border-radius:50%;background:#2563eb;border:none;color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;margin-top:2px}
+.module-card .mod-add:hover{background:#3b82f6;box-shadow:0 0 10px rgba(37,99,235,.4)}
 
-/* Search */
-.search-box{position:relative}
-.search-box input{width:100%;padding:10px 14px 10px 36px;border:1px solid #3d3d6e;border-radius:8px;font-size:13px;background:#0d0d20;color:#c9d1d9;transition:.2s;outline:none}
-.search-box input:focus{border-color:#6c63ff;box-shadow:0 0 0 3px #6c63ff20}
-.search-box .search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#6b6b8a;font-size:14px}
+/* Presets */
+.preset-list{display:flex;flex-direction:column;gap:6px}
+.preset-item{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:12px 14px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:space-between}
+.preset-item:hover{background:#1e3a5f;border-color:#2563eb}
+.preset-item .preset-info{display:flex;flex-direction:column;gap:2px}
+.preset-item .preset-name{font-size:14px;font-weight:600;color:#e2e8f0}
+.preset-item .preset-desc{font-size:11px;color:#64748b}
+.preset-item .preset-load{background:#2563eb;color:#fff;border:none;padding:6px 14px;border-radius:6px;font-size:12px;cursor:pointer;transition:.2s;font-weight:500}
+.preset-item .preset-load:hover{background:#3b82f6}
 
-/* Product List */
-.product-scroll{max-height:260px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;margin-top:8px;border-radius:8px}
-.product-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;transition:.2s;background:#16213e30;border:1px solid transparent}
-.product-item:hover{background:#16213e80;border-color:#3d3d6e;transform:translateX(2px)}
-.product-item img{width:44px;height:44px;border-radius:6px;object-fit:cover;background:#0d0d20;flex-shrink:0}
-.product-item .prod-info{flex:1;min-width:0}
-.product-item .prod-name{font-size:12px;color:#c9d1d9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3}
-.product-item .prod-sku{font-size:10px;color:#6b6b8a;margin-top:2px}
-.product-item .add-btn{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#6c63ff,#48c6ef);border:none;color:#fff;font-size:18px;cursor:pointer;flex-shrink:0;transition:.2s;display:flex;align-items:center;justify-content:center;line-height:1}
-.product-item .add-btn:hover{transform:scale(1.1);box-shadow:0 0 12px #6c63ff60}
-.no-results{text-align:center;padding:20px;color:#6b6b8a;font-size:12px}
+/* Color Swatches */
+.color-row{display:flex;gap:8px;flex-wrap:wrap}
+.color-swatch{width:32px;height:32px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .2s;position:relative}
+.color-swatch:hover{transform:scale(1.1)}
+.color-swatch.active{border-color:#fff;box-shadow:0 0 10px currentColor}
 
-/* Scene Model List */
-.model-list{display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto}
-.model-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;background:#16213e30;border:1px solid #2d2d5e;transition:.2s;cursor:pointer}
-.model-item:hover{background:#16213e80}
-.model-item.selected{border-color:#6c63ff;background:#6c63ff15;box-shadow:0 0 12px #6c63ff20}
-.model-item .model-thumb{width:48px;height:48px;border-radius:6px;background:#0d0d20;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;color:#6b6b8a;overflow:hidden}
-.model-item .model-thumb img{width:100%;height:100%;object-fit:cover}
-.model-info{flex:1;min-width:0}
-.model-name{font-size:13px;color:#c9d1d9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}
-.model-source{font-size:10px;color:#6b6b8a;margin-top:2px}
-.model-actions{display:flex;gap:4px}
-.model-actions button{width:28px;height:28px;border-radius:6px;border:1px solid #3d3d6e;background:transparent;color:#8b8ba7;cursor:pointer;font-size:12px;transition:.2s;display:flex;align-items:center;justify-content:center}
-.model-actions button:hover{background:#e74c3c20;border-color:#e74c3c;color:#e74c3c}
+/* Added modules list in panel */
+.added-list{display:flex;flex-direction:column;gap:4px}
+.added-item{display:flex;align-items:center;gap:8px;padding:8px 10px;background:#1e293b;border:1px solid #334155;border-radius:8px;font-size:12px;transition:.2s}
+.added-item .item-icon{font-size:18px;flex-shrink:0}
+.added-item .item-name{flex:1;color:#e2e8f0;font-weight:500}
+.added-item .item-price{color:#64748b;font-size:11px}
+.added-item .item-del{width:22px;height:22px;border-radius:6px;border:1px solid #475569;background:transparent;color:#94a3b8;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:.2s;flex-shrink:0}
+.added-item .item-del:hover{background:#7f1d1d;border-color:#dc2626;color:#fca5a5}
 
-/* Buttons */
-.btn{padding:8px 16px;border-radius:8px;border:none;font-size:13px;font-weight:500;cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:6px}
-.btn-primary{background:linear-gradient(135deg,#6c63ff,#48c6ef);color:#fff}
-.btn-primary:hover{box-shadow:0 4px 16px #6c63ff40;transform:translateY(-1px)}
-.btn-danger{background:#e74c3c20;color:#e74c3c;border:1px solid #e74c3c40}
-.btn-danger:hover{background:#e74c3c30}
-.btn-sm{padding:4px 10px;font-size:11px}
-.btn-full{width:100%;justify-content:center}
+/* Price Summary */
+.price-summary{border-top:1px solid #1f2937;padding-top:12px;display:flex;justify-content:space-between;align-items:center}
+.price-summary .total-label{font-size:13px;color:#64748b}
+.price-summary .total-price{font-size:22px;font-weight:800;color:#f1f5f9}
 
-/* 3D Canvas Container */
-.canvas-container{flex:1;position:relative;background:radial-gradient(ellipse at center,#1a1a2e 0%,#0d1117 70%)}
+/* Panel Footer */
+.panel-footer{padding:14px 16px;border-top:1px solid #1f2937;display:flex;gap:8px}
+.panel-footer button{flex:1;padding:10px;border-radius:8px;border:none;font-size:13px;font-weight:600;cursor:pointer;transition:.2s}
+.btn-reset{background:#1e293b;color:#94a3b8;border:1px solid #334155}
+.btn-reset:hover{background:#dc262620;color:#fca5a5;border-color:#dc2626}
+.btn-checkout{background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff}
+.btn-checkout:hover{opacity:.9;box-shadow:0 4px 16px rgba(37,99,235,.3)}
+
+/* 3D Canvas */
+.canvas-container{flex:1;position:relative;background:radial-gradient(ellipse at center,#1e293b 0%,#0f172a 70%)}
 .canvas-container canvas{display:block}
-#three-canvas{width:100%;height:100%}
 
 /* Top Toolbar */
-.toolbar{position:absolute;top:16px;left:50%;transform:translateX(-50%);display:flex;gap:6px;padding:8px 12px;background:#1a1a2eee;border:1px solid #2d2d5e;border-radius:12px;z-index:20;backdrop-filter:blur(10px)}
-.toolbar button{width:36px;height:36px;border-radius:8px;border:1px solid #3d3d6e;background:transparent;color:#8b8ba7;cursor:pointer;font-size:14px;transition:.2s;display:flex;align-items:center;justify-content:center;position:relative}
-.toolbar button:hover{background:#16213e80;color:#c9d1d9;border-color:#6c63ff}
-.toolbar button.active{background:#6c63ff20;border-color:#6c63ff;color:#6c63ff}
-.toolbar .divider{width:1px;background:#3d3d6e;margin:0 4px}
+.toolbar{position:absolute;top:16px;left:50%;transform:translateX(-50%);display:flex;gap:4px;padding:6px 10px;background:#111827ee;border:1px solid #1f2937;border-radius:10px;z-index:20;backdrop-filter:blur(10px)}
+.toolbar button{width:34px;height:34px;border-radius:8px;border:1px solid #334155;background:transparent;color:#94a3b8;cursor:pointer;font-size:14px;transition:.2s;display:flex;align-items:center;justify-content:center}
+.toolbar button:hover{background:#1e293b;color:#e2e8f0;border-color:#475569}
+.toolbar .divider{width:1px;background:#334155;margin:0 3px}
 
-/* Tooltip */
-[data-tooltip]{position:relative}
-[data-tooltip]::after{content:attr(data-tooltip);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#1a1a2e;color:#c9d1d9;padding:4px 10px;border-radius:6px;font-size:11px;white-space:nowrap;pointer-events:none;opacity:0;transition:.15s;border:1px solid #3d3d6e;z-index:30}
-[data-tooltip]:hover::after{opacity:1}
+/* Module tags bar (below toolbar) */
+.module-tags{position:absolute;top:68px;left:50%;transform:translateX(-50%);display:flex;gap:6px;flex-wrap:wrap;justify-content:center;max-width:80%;z-index:20}
+.module-tag{background:#1e293bee;border:1px solid #334155;border-radius:20px;padding:5px 14px;font-size:12px;color:#cbd5e1;cursor:pointer;transition:.2s;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.module-tag:hover{background:#1e3a5fee;border-color:#2563eb}
+.module-tag.selected{background:#2563eb30;border-color:#2563eb;color:#60a5fa}
+.module-tag .tag-del{width:16px;height:16px;border-radius:50%;background:#ef444430;color:#fca5a5;font-size:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;margin-left:2px}
+.module-tag .tag-del:hover{background:#dc2626;color:#fff}
 
-/* Status bar */
-.status-bar{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:#1a1a2eee;padding:6px 14px;border-radius:20px;font-size:11px;color:#6b6b8a;border:1px solid #2d2d5e;pointer-events:none;z-index:10}
+/* Floor grid hint */
+.floor-hint{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);color:#475569;font-size:11px;z-index:10;pointer-events:none}
 
-/* Drop Zone Hint */
-.drop-hint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#6c63ff15;z-index:15;pointer-events:none;opacity:0;transition:.2s}
-.drop-hint.show{opacity:1}
-.drop-hint-inner{background:#1a1a2eee;padding:24px 40px;border-radius:16px;border:2px dashed #6c63ff;color:#c9d1d9;font-size:16px;font-weight:600;text-align:center}
-
-/* Rename Modal */
-.modal-overlay{position:fixed;inset:0;background:#00000080;z-index:100;display:flex;align-items:center;justify-content:center;display:none}
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:#00000080;z-index:100;display:none;align-items:center;justify-content:center}
 .modal-overlay.show{display:flex}
-.modal{background:#1a1a2e;border:1px solid #2d2d5e;border-radius:16px;padding:24px;min-width:320px;box-shadow:0 20px 60px #00000060}
-.modal h3{font-size:15px;margin-bottom:16px;color:#c9d1d9}
-.modal input{width:100%;padding:10px 14px;border:1px solid #3d3d6e;border-radius:8px;font-size:14px;background:#0d0d20;color:#c9d1d9;outline:none;margin-bottom:16px}
-.modal input:focus{border-color:#6c63ff}
+.modal{background:#111827;border:1px solid #1f2937;border-radius:16px;padding:24px;min-width:340px;box-shadow:0 20px 60px #00000060}
+.modal h3{font-size:16px;margin-bottom:16px;color:#f1f5f9}
+.modal p{font-size:13px;color:#94a3b8;margin-bottom:20px;line-height:1.6}
 .modal-actions{display:flex;gap:8px;justify-content:flex-end}
+.modal-actions button{padding:8px 20px;border-radius:8px;border:none;font-size:13px;font-weight:600;cursor:pointer}
+.modal-btn-cancel{background:#1e293b;color:#94a3b8}
+.modal-btn-confirm{background:#2563eb;color:#fff}
 
-/* Responsive */
-@media(max-width:768px){
-.panel{width:260px;min-width:260px}
-.toolbar{gap:4px;padding:6px 8px}
-.toolbar button{width:30px;height:30px;font-size:12px}
+@media(max-width:900px){
+.panel{width:280px;min-width:280px}
+.module-grid{grid-template-columns:1fr}
 }
-
-/* Loading indicator */
-.loading-spinner{display:inline-block;width:16px;height:16px;border:2px solid #6c63ff40;border-top-color:#6c63ff;border-radius:50%;animation:spin .8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
 
 <!-- Left Panel -->
 <div class="panel" id="panel">
-<div class="panel-header">
-<div class="logo">3D</div>
-<h1>Product Studio</h1>
-</div>
-<div class="panel-body">
+  <div class="panel-header">
+    <div class="logo"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+    <h1>模块化配置器</h1>
+    <a href="index.html" class="back-link">← 返回目录</a>
+  </div>
+  <div class="panel-body">
+    <!-- Modules -->
+    <div class="section-title">可选模块</div>
+    <div class="module-grid" id="moduleGrid">
+      <div class="module-card" data-module="left-arm">
+        <div class="mod-icon">🪑</div>
+        <div class="mod-name">左扶手模块</div>
+        <div class="mod-price">$1,170</div>
+        <button class="mod-add" data-action="add" data-module="left-arm">+</button>
+      </div>
+      <div class="module-card" data-module="right-arm">
+        <div class="mod-icon">🪑</div>
+        <div class="mod-name">右扶手模块</div>
+        <div class="mod-price">$1,170</div>
+        <button class="mod-add" data-action="add" data-module="right-arm">+</button>
+      </div>
+      <div class="module-card" data-module="armless">
+        <div class="mod-icon">🛋</div>
+        <div class="mod-name">无扶手模块</div>
+        <div class="mod-price">$950</div>
+        <button class="mod-add" data-action="add" data-module="armless">+</button>
+      </div>
+      <div class="module-card" data-module="corner">
+        <div class="mod-icon">🔲</div>
+        <div class="mod-name">转角模块</div>
+        <div class="mod-price">$1,280</div>
+        <button class="mod-add" data-action="add" data-module="corner">+</button>
+      </div>
+      <div class="module-card" data-module="table">
+        <div class="mod-icon">☕</div>
+        <div class="mod-name">茶几模块</div>
+        <div class="mod-price">$700</div>
+        <button class="mod-add" data-action="add" data-module="table">+</button>
+      </div>
+      <div class="module-card" data-module="ottoman">
+        <div class="mod-icon">🧶</div>
+        <div class="mod-name">脚踏模块</div>
+        <div class="mod-price">$650</div>
+        <button class="mod-add" data-action="add" data-module="ottoman">+</button>
+      </div>
+    </div>
 
-<!-- Upload Section -->
-<div class="section-title">模型上传</div>
-<div class="upload-zone" id="uploadZone">
-<span class="upload-icon">&#128194;</span>
-<span class="upload-text">拖拽 .glb 文件到此处</span>
-<span class="upload-hint">或点击选择文件</span>
-<input type="file" id="fileInput" accept=".glb" multiple>
-</div>
+    <!-- Presets -->
+    <div class="section-title">预配置方案</div>
+    <div class="preset-list">
+      <div class="preset-item">
+        <div class="preset-info">
+          <div class="preset-name">三人沙发</div>
+          <div class="preset-desc">左扶手 + 无扶手 + 右扶手</div>
+        </div>
+        <button class="preset-load" data-preset="3seater">加载</button>
+      </div>
+      <div class="preset-item">
+        <div class="preset-info">
+          <div class="preset-name">L型转角组合</div>
+          <div class="preset-desc">左扶手 + 转角 + 无扶手 + 右扶手</div>
+        </div>
+        <button class="preset-load" data-preset="lshape">加载</button>
+      </div>
+      <div class="preset-item">
+        <div class="preset-info">
+          <div class="preset-name">U型大组合</div>
+          <div class="preset-desc">左扶手 + 无扶手 + 转角 + 无扶手 + 右扶手</div>
+        </div>
+        <button class="preset-load" data-preset="ushape">加载</button>
+      </div>
+      <div class="preset-item">
+        <div class="preset-info">
+          <div class="preset-name">带茶几L型</div>
+          <div class="preset-desc">左扶手 + 转角 + 茶几 + 右扶手</div>
+        </div>
+        <button class="preset-load" data-preset="lshape-table">加载</button>
+      </div>
+    </div>
 
-<!-- SKU Search Section -->
-<div class="section-title">产品选择</div>
-<div class="search-box">
-<span class="search-icon">&#128269;</span>
-<input type="text" id="skuSearch" placeholder="搜索 SKU 或产品名称...">
-</div>
-<div class="product-scroll" id="productList"></div>
+    <!-- Color -->
+    <div class="section-title">面料颜色</div>
+    <div class="color-row" id="colorRow">
+      <div class="color-swatch active" data-color="#e8ddd0" data-name="米白帆布" style="background:#e8ddd0;color:#e8ddd0"></div>
+      <div class="color-swatch" data-color="#9ca3a0" data-name="灰褐" style="background:#9ca3a0;color:#9ca3a0"></div>
+      <div class="color-swatch" data-color="#3d4045" data-name="炭黑" style="background:#3d4045;color:#3d4045"></div>
+      <div class="color-swatch" data-color="#4a6583" data-name="靛蓝" style="background:#4a6583;color:#4a6583"></div>
+      <div class="color-swatch" data-color="#5c7a5e" data-name="叶绿" style="background:#5c7a5e;color:#5c7a5e"></div>
+      <div class="color-swatch" data-color="#8b5a3c" data-name="铁锈红" style="background:#8b5a3c;color:#8b5a3c"></div>
+    </div>
 
-<!-- Scene Models Section -->
-<div class="section-title" style="margin-top:4px">场景模型 (<span id="modelCount">0</span>)</div>
-<div class="model-list" id="modelList">
-<div class="no-results">尚未添加模型<br>上传 GLB 或从产品列表添加</div>
-</div>
-<button class="btn btn-danger btn-full" id="clearSceneBtn">清空场景</button>
+    <!-- Added Modules -->
+    <div class="section-title">已添加模块 (<span id="addedCount">0</span>)</div>
+    <div class="added-list" id="addedList">
+      <div style="text-align:center;padding:16px;color:#475569;font-size:12px">点击上方模块或加载预配置方案开始拼装</div>
+    </div>
 
-</div>
+    <!-- Price -->
+    <div class="price-summary">
+      <span class="total-label">预估总价</span>
+      <span class="total-price" id="totalPrice">$0</span>
+    </div>
+  </div>
+  <div class="panel-footer">
+    <button class="btn-reset" id="btnReset">清空重来</button>
+    <button class="btn-checkout" id="btnCheckout">查看配置清单</button>
+  </div>
 </div>
 
 <!-- 3D Canvas -->
 <div class="canvas-container" id="canvasContainer">
-<canvas id="three-canvas"></canvas>
-
-<!-- Top Toolbar -->
-<div class="toolbar" id="toolbar">
-<button data-tooltip="重置视角" id="btnReset" title="重置视角">&#8634;</button>
-<div class="divider"></div>
-<button data-tooltip="俯视图" id="btnTop" title="俯视图">&#9650;</button>
-<button data-tooltip="前视图" id="btnFront" title="前视图">&#9638;</button>
-<button data-tooltip="侧视图" id="btnSide" title="侧视图">&#9637;</button>
-<div class="divider"></div>
-<button data-tooltip="显示/隐藏网格" id="btnGrid" title="网格" class="active">#</button>
-<div class="divider"></div>
-<button data-tooltip="截图导出" id="btnScreenshot" title="截图">&#128247;</button>
+  <canvas id="three-canvas"></canvas>
+  <div class="toolbar" id="toolbar">
+    <button id="btnTop" title="俯视">⬆</button>
+    <button id="btnFront" title="正面">⬛</button>
+    <button id="btnSide" title="侧面">⬜</button>
+    <div class="divider"></div>
+    <button id="btnResetView" title="重置视角">↺</button>
+    <button id="btnScreenshot" title="截图">📷</button>
+  </div>
+  <div class="module-tags" id="moduleTags"></div>
+  <div class="floor-hint">右键旋转 · 滚轮缩放 · 中键平移</div>
 </div>
 
-<!-- Drop Hint -->
-<div class="drop-hint" id="dropHint"><div class="drop-hint-inner">释放以加载模型</div></div>
-
-<!-- Status -->
-<div class="status-bar" id="statusBar">右键旋转 | 滚轮缩放 | 中键平移 | 左键拖拽模型</div>
+<!-- Confirm Modal -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal">
+    <h3 id="confirmTitle">确认操作</h3>
+    <p id="confirmBody"></p>
+    <div class="modal-actions">
+      <button class="modal-btn-cancel" id="confirmCancel">取消</button>
+      <button class="modal-btn-confirm" id="confirmOk">确认</button>
+    </div>
+  </div>
 </div>
 
-<!-- Rename Modal -->
-<div class="modal-overlay" id="renameModal">
-<div class="modal">
-<h3>重命名模型</h3>
-<input type="text" id="renameInput" placeholder="输入新名称">
-<div class="modal-actions">
-<button class="btn btn-danger btn-sm" id="renameCancel">取消</button>
-<button class="btn btn-primary btn-sm" id="renameConfirm">确认</button>
-</div>
-</div>
-</div>
-
-<!-- Three.js Import Map -->
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
 </script>
@@ -202,38 +258,33 @@ a{color:inherit;text-decoration:none}
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { DragControls } from 'three/addons/controls/DragControls.js';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-// ============ Product Data ============
-const PRODUCTS = [{"sku": "ZY05-KSSF-DRSF-FS-KK", "title": "PURPLE LEAF Caesar Khaki Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf-drsf-fs-kk.jpg?v=1769668246"}, {"sku": "ZY05-KSSF-DRSF-ZFS-KK", "title": "PURPLE LEAF Caesar Khaki Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf-drsf-yfs-kk.jpg?v=1769668246"}, {"sku": "ZY05-KSSF-DRSF-YFS-KK", "title": "PURPLE LEAF Caesar Khaki Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf-drsf-zfs-kk.jpg?v=1769668246"}, {"sku": "ZY05-KSSF-DRSF-WF-KK", "title": "PURPLE LEAF Caesar Khaki Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf-drsf-wf-kk.jpg?v=1775879663"}, {"sku": "ZY05-KSSF-ZJSF-KK", "title": "PURPLE LEAF Caesar Khaki Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf-zjsf-kk.jpg?v=1775879663"}, {"sku": "ZY05-KSSF-CJ-KK", "title": "PURPLE LEAF Caesar Khaki Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf-cj-kk.jpg?v=1769668246"}, {"sku": "ZY05-KSSF-JT-KK", "title": "PURPLE LEAF Caesar Khaki Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf-jt-kk.jpg?v=1769668246"}, {"sku": "ZY05-KSSF-DRSF-FS-BR", "title": "PURPLE LEAF Caesar Bronze Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf-drsf-fs-br.jpg?v=1769668246"}, {"sku": "ZY05-KSSF-DRSF-ZFS-BR", "title": "PURPLE LEAF Caesar Bronze Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf-drsf-yfs-br.jpg?v=1769668246"}, {"sku": "ZY05-KSSF-DRSF-YFS-BR", "title": "PURPLE LEAF Caesar Bronze Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf-drsf-zfs-br.jpg?v=1769668235"}, {"sku": "ZY05-KSSF-DRSF-WF-BR", "title": "PURPLE LEAF Caesar Bronze Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf-drsf-wf-br.jpg?v=1775879667"}, {"sku": "ZY05-KSSF-ZJSF-BR", "title": "PURPLE LEAF Caesar Bronze Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf-zjsf-br.jpg?v=1775879667"}, {"sku": "ZY05-KSSF-CJ-BR", "title": "PURPLE LEAF Caesar Bronze Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf-cj-br.jpg?v=1769668246"}, {"sku": "ZY05-KSSF-JT-BR", "title": "PURPLE LEAF Caesar Bronze Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf-jt-br.jpg?v=1769668235"}, {"sku": "ZY05-KSSF-DRSF-FS-GY", "title": "PURPLE LEAF Caesar Grey Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf-drsf-fs-gy.jpg?v=1769668246"}, {"sku": "ZY05-KSSF-DRSF-ZFS-GY", "title": "PURPLE LEAF Caesar Grey Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf-drsf-yfs-gy.jpg?v=1769668246"}, {"sku": "ZY05-KSSF-DRSF-YFS-GY", "title": "PURPLE LEAF Caesar Grey Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf-drsf-zfs-gy.jpg?v=1769668246"}, {"sku": "ZY05-KSSF-DRSF-WF-GY", "title": "PURPLE LEAF Caesar Grey Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf-drsf-wf-gy.jpg?v=1775879627"}, {"sku": "ZY05-KSSF-ZJSF-GY", "title": "PURPLE LEAF Caesar Grey Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf-zjsf-gy.jpg?v=1775879627"}, {"sku": "ZY05-KSSF-CJ-GY", "title": "PURPLE LEAF Caesar Grey Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf-cj-gy.jpg?v=1769668246"}, {"sku": "ZY05-KSSF-JT-GY", "title": "PURPLE LEAF Caesar Grey Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf-jt-gy.jpg?v=1769668246"}, {"sku": "ZY05-KSSF08-QB-W2O-GY", "title": "PURPLE LEAF Caesar Enclosed Patio Conversation Set with Grey Cushion Pillows and Ottoman for Porch Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf08-qb-w2o-gy.jpg?v=1765797779"}, {"sku": "ZY05-KSSF13-QB-GY", "title": "PURPLE LEAF Caesar Enclosed Patio Conversation Set with Grey Cushion Pillows and Ottoman for Porch Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf13-qb-gy.png?v=1771154455"}, {"sku": "ZY05-KSSF11-QB-W1T2O-GY", "title": "PURPLE LEAF Caesar Enclosed Patio Conversation Set with Grey Cushion Pillows and Ottoman for Porch Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf11-qb-w1t2o-gy.png?v=1765797779"}, {"sku": "ZY05-KSSF11-QB-W1T2O2C-GY", "title": "PURPLE LEAF Caesar Enclosed Patio Conversation Set with Grey Cushion Pillows and Ottoman for Porch Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf11-qb-w1t2o2c-gy.jpg?v=1765797779"}, {"sku": "ZY05-KSSF08-BB-BR", "title": "PURPLE LEAF Caesar Open-End Patio Conversation Set with Bronze Cushion Pillows and Ottoman for Modern Outdoor Deck", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf08-bb-br.jpg?v=1772678461"}, {"sku": "ZY05-KSSF06-BB-WT-BR", "title": "PURPLE LEAF Caesar Open-End Patio Conversation Set with Bronze Cushion Pillows and Ottoman for Modern Outdoor Deck", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf06-bb-wt-br_aab153dd-521c-4b3c-b4b2-8064f8cc59fb.jpg?v=1772678461"}, {"sku": "ZY05-KSSF07-BB-WT-BR", "title": "PURPLE LEAF Caesar Open-End Patio Conversation Set with Bronze Cushion Pillows and Ottoman for Modern Outdoor Deck", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf07-bb-wt-br_0fa565e5-2651-4ce5-af66-44b111b5fee0.jpg?v=1772678461"}, {"sku": "ZY05-KSSF07-BB-W1T1O-BR", "title": "PURPLE LEAF Caesar Open-End Patio Conversation Set with Bronze Cushion Pillows and Ottoman for Modern Outdoor Deck", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf07-bb-w1t1o-br_6952ea96-7025-4659-b762-446e3c593140.jpg?v=1772678461"}, {"sku": "ZY05-KSSF08-BB-WT-BR", "title": "PURPLE LEAF Caesar Open-End Patio Conversation Set with Bronze Cushion Pillows and Ottoman for Modern Outdoor Deck", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf08-bb-wt-br_2e00af2f-132d-4ae5-90af-3712e571eb34.jpg?v=1772678461"}, {"sku": "ZY05-KSSF08-BB-W1T1O-BR", "title": "PURPLE LEAF Caesar Open-End Patio Conversation Set with Bronze Cushion Pillows and Ottoman for Modern Outdoor Deck", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf08-bb-w1t1o-br_ba0b0110-4e7f-40d4-802d-183a7b3ec163.jpg?v=1772678461"}, {"sku": "ZY05-KSSF10-BB-WT-BR", "title": "PURPLE LEAF Caesar Open-End Patio Conversation Set with Bronze Cushion Pillows and Ottoman for Modern Outdoor Deck", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf10-bb-wt-br.jpg?v=1779442007"}, {"sku": "ZY05-KSSF08-QB-W2O-BR", "title": "PURPLE LEAF Caesar Enclosed Patio Conversation Set with Bronze Cushion Pillows and Ottoman for Porch Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf08-qb-w2o-br.jpg?v=1768186678"}, {"sku": "ZY05-KSSF12-QB-BR", "title": "PURPLE LEAF Caesar Enclosed Patio Conversation Set with Bronze Cushion Pillows and Ottoman for Porch Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf12-qb-br.jpg?v=1765448540"}, {"sku": "ZY05-KSSF13-QB-BR", "title": "PURPLE LEAF Caesar Enclosed Patio Conversation Set with Bronze Cushion Pillows and Ottoman for Porch Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf13-qb-br.jpg?v=1765448560"}, {"sku": "ZY05-KSSF09-QB-WT-BR", "title": "PURPLE LEAF Caesar Enclosed Patio Conversation Set with Bronze Cushion Pillows and Ottoman for Porch Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf09-qb-wt-br.jpg?v=1768186678"}, {"sku": "ZY05-KSSF10-QB-W1T2O-BR", "title": "PURPLE LEAF Caesar Enclosed Patio Conversation Set with Bronze Cushion Pillows and Ottoman for Porch Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf10-qb-w1t2o-br.jpg?v=1768186678"}, {"sku": "ZY05-KSSF11-QB-W1T2O-BR", "title": "PURPLE LEAF Caesar Enclosed Patio Conversation Set with Bronze Cushion Pillows and Ottoman for Porch Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf11-qb-w1t2o-br.jpg?v=1768186678"}, {"sku": "ZY05-KSSF11-QB-W1T2O2C-BR", "title": "PURPLE LEAF Caesar Enclosed Patio Conversation Set with Bronze Cushion Pillows and Ottoman for Porch Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf11-qb-w1t2o2c-br.jpg?v=1768186678"}, {"sku": "ZY05-KSSF11-QB-W2T2O-BR", "title": "PURPLE LEAF Caesar Enclosed Patio Conversation Set with Bronze Cushion Pillows and Ottoman for Porch Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf11-qb-w2t2o-br_f7d24730-f176-4efd-83ca-8f45bc1f003f.jpg?v=1768186678"}, {"sku": "ZY05-KSSF12-QB-W1T1O-BR", "title": "PURPLE LEAF Caesar Enclosed Patio Conversation Set with Bronze Cushion Pillows and Ottoman for Porch Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf12-qb-w1t1o-br.jpg?v=1765448477"}, {"sku": "ZY05-KSSF12-QB-W1T2O-BR", "title": "PURPLE LEAF Caesar Enclosed Patio Conversation Set with Bronze Cushion Pillows and Ottoman for Porch Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf12-qb-w1t2o-br.jpg?v=1765448501"}, {"sku": "ZY05-KSSF20-QB-W2T2O-BR", "title": "PURPLE LEAF Caesar Enclosed Patio Conversation Set with Bronze Cushion Pillows and Ottoman for Porch Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf20-qb-w2t2o-br.jpg?v=1765448518"}, {"sku": "ZY05-KSSF06-UX-W2O-BR", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Bronze Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf06-ux-w2o-br.jpg?v=1764051141"}, {"sku": "ZY05-KSSF07-UX-WO-BR", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Bronze Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf07-ux-wo-br.jpg?v=1768393157"}, {"sku": "ZY05-KSSF08-UX-BR", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Bronze Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf08-ux-br.jpg?v=1768393212"}, {"sku": "ZY05-KSSF08-UX-W2O-BR", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Bronze Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf08-ux-w2o-br_32a226a0-b621-44dd-bab9-8e7ef0b49294.jpg?v=1764051190"}, {"sku": "ZY05-KSSF10-UX-BR", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Bronze Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf10-ux-br.jpg?v=1768393505"}, {"sku": "ZY05-KSSF10-UX-WO-BR", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Bronze Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf10-ux-wo-br_9487c170-7393-4eca-b540-028c958ac706.jpg?v=1768393538"}, {"sku": "ZY05-KSSF11-UX-BR", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Bronze Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf11-ux-br_87d06526-7c94-4f1a-b50d-87916433a3be.jpg?v=1768393566"}, {"sku": "ZY05-KSSF08-UX-W1T2O-BR", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Bronze Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf08-ux-w1t2o-br_7e50645c-84b7-45bb-ba99-18990962c99a.jpg?v=1764234382"}, {"sku": "ZY05-KSSF09-UX-W1T1O-BR", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Bronze Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf09-ux-w1t1o-br.jpg?v=1768393600"}, {"sku": "ZY05-KSSF10-UX-WT-BR", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Bronze Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf10-ux-wt-br.jpg?v=1768393640"}, {"sku": "ZY05-KSSF10-UX-W1T1O-BR", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Bronze Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf10-ux-w1t1o-br.jpg?v=1768393680"}, {"sku": "ZY05-KSSF11-UX-WT-BR", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Bronze Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf11-ux-wt-br.jpg?v=1768393718"}, {"sku": "ZY05-KSSF13-UX-W2T-BR", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Bronze Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf13-ux-w2t-br_cdaa1c92-64c9-4b76-ae26-e50dd73cacbb.jpg?v=1768393743"}, {"sku": "ZY05-KSSF18-UX-W2T2O-BR", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Bronze Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf18-ux-w2t2o-br_5af462e3-0e4a-453b-9b22-229f0e03ac31.jpg?v=1768393763"}, {"sku": "ZY05-KSSF04-LX-WO-BR", "title": "PURPLE LEAF Caesar L-shaped Patio Conversation Set with Bronze Cushion Pillows and Ottoman Couch for Backyard Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf04-lx-wo-br.jpg?v=1776677162"}, {"sku": "ZY05-KSSF05-LX-BR", "title": "PURPLE LEAF Caesar L-shaped Patio Conversation Set with Bronze Cushion Pillows and Ottoman Couch for Backyard Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf05-lx-br.jpg?v=1776677162"}, {"sku": "ZY05-KSSF08-LX-W2O-BR", "title": "PURPLE LEAF Caesar L-shaped Patio Conversation Set with Bronze Cushion Pillows and Ottoman Couch for Backyard Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf08-lx-w2o-br.jpg?v=1776677162"}, {"sku": "ZY05-KSSF10-LX-BR", "title": "PURPLE LEAF Caesar L-shaped Patio Conversation Set with Bronze Cushion Pillows and Ottoman Couch for Backyard Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf10-lx-br.jpg?v=1776677162"}, {"sku": "ZY05-KSSF12-LX-BR", "title": "PURPLE LEAF Caesar L-shaped Patio Conversation Set with Bronze Cushion Pillows and Ottoman Couch for Backyard Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf12-lx-br.jpg?v=1776677162"}, {"sku": "ZY05-KSSF06-LX-W1T1O-BR", "title": "PURPLE LEAF Caesar L-shaped Patio Conversation Set with Bronze Cushion Pillows and Ottoman Couch for Backyard Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf06-lx-w1t1o-br_4185c05a-1418-435c-9bc0-f1ada537d47d.jpg?v=1776677162"}, {"sku": "ZY05-KSSF07-LX-WT-BR", "title": "PURPLE LEAF Caesar L-shaped Patio Conversation Set with Bronze Cushion Pillows and Ottoman Couch for Backyard Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf07-lx-wt-br.jpg?v=1776677162"}, {"sku": "ZY05-KSSF08-LX-WT-BR", "title": "PURPLE LEAF Caesar L-shaped Patio Conversation Set with Bronze Cushion Pillows and Ottoman Couch for Backyard Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf08-lx-wt-br_26b39e4c-4ab2-46c3-a49c-bed65016a629.jpg?v=1776677162"}, {"sku": "ZY05-KSSF12-LX-W2T2O-BR", "title": "PURPLE LEAF Caesar L-shaped Patio Conversation Set with Bronze Cushion Pillows and Ottoman Couch for Backyard Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf12-lx-w2t2o-br_66823b0e-b537-4229-b259-57ce1409d1ea.jpg?v=1776677162"}, {"sku": "ZY05-KSSF14-LX-W2T-BR", "title": "PURPLE LEAF Caesar L-shaped Patio Conversation Set with Bronze Cushion Pillows and Ottoman Couch for Backyard Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf14-lx-w2t-br_83aba677-49ba-432a-a468-c421ddcdafaa.jpg?v=1776677162"}, {"sku": "ZY05-KSSF15-LX-W2T-BR", "title": "PURPLE LEAF Caesar L-shaped Patio Conversation Set with Bronze Cushion Pillows and Ottoman Couch for Backyard Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf15-lx-w2t-br_a1f0e298-ba3c-4141-b7f2-fdaef636e414.jpg?v=1776677162"}, {"sku": "ZY05-KSSF08-BB-KK", "title": "PURPLE LEAF Caesar Open-End Patio Conversation Set with Khaki Cushion Pillows and Ottoman for Modern Outdoor Deck", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf08-bb-kk_216cad99-e24c-46fd-b078-d7d2152ee9bb.jpg?v=1766136800"}, {"sku": "ZY05-KSSF06-BB-WT-KK", "title": "PURPLE LEAF Caesar Open-End Patio Conversation Set with Khaki Cushion Pillows and Ottoman for Modern Outdoor Deck", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf06-bb-wt-kk.jpg?v=1763995986"}, {"sku": "ZY05-KSSF07-BB-WT-KK", "title": "PURPLE LEAF Caesar Open-End Patio Conversation Set with Khaki Cushion Pillows and Ottoman for Modern Outdoor Deck", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf07-bb-wt-kk.jpg?v=1766136800"}, {"sku": "ZY05-KSSF07-BB-W1T1O-KK", "title": "PURPLE LEAF Caesar Open-End Patio Conversation Set with Khaki Cushion Pillows and Ottoman for Modern Outdoor Deck", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf07-bb-w1t1o-kk_a47a6d87-289e-4557-a3c8-9921b0fe1884.jpg?v=1766136800"}, {"sku": "ZY05-KSSF08-BB-WT-KK", "title": "PURPLE LEAF Caesar Open-End Patio Conversation Set with Khaki Cushion Pillows and Ottoman for Modern Outdoor Deck", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf08-bb-wt-kk.jpg?v=1766136800"}, {"sku": "ZY05-KSSF08-BB-W1T1O-KK", "title": "PURPLE LEAF Caesar Open-End Patio Conversation Set with Khaki Cushion Pillows and Ottoman for Modern Outdoor Deck", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf08-bb-w1t1o-kk.jpg?v=1766136800"}, {"sku": "ZY05-KSSF08-QB-W2O-KK", "title": "PURPLE LEAF Caesar Enclosed Patio Conversation Set with Khaki Cushion Pillows and Ottoman for Porch Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf08-qb-w2o-kk_db1da7d3-dbfe-4e88-ba51-95510f8b0e09.jpg?v=1767591723"}, {"sku": "ZY05-KSSF12-QB-KK", "title": "PURPLE LEAF Caesar Enclosed Patio Conversation Set with Khaki Cushion Pillows and Ottoman for Porch Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf12-qb-kk.jpg?v=1767591723"}, {"sku": "ZY05-KSSF13-QB-KK", "title": "PURPLE LEAF Caesar Enclosed Patio Conversation Set with Khaki Cushion Pillows and Ottoman for Porch Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf13-qb-kk.jpg?v=1767591723"}, {"sku": "ZY05-KSSF09-QB-WT-KK", "title": "PURPLE LEAF Caesar Enclosed Patio Conversation Set with Khaki Cushion Pillows and Ottoman for Porch Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf09-qb-wt-kk.jpg?v=1767591723"}, {"sku": "ZY05-KSSF10-QB-W1T2O-KK", "title": "PURPLE LEAF Caesar Enclosed Patio Conversation Set with Khaki Cushion Pillows and Ottoman for Porch Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf10-qb-w1t2o-kk.jpg?v=1767591723"}, {"sku": "ZY05-KSSF11-QB-W1T2O-KK", "title": "PURPLE LEAF Caesar Enclosed Patio Conversation Set with Khaki Cushion Pillows and Ottoman for Porch Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf11-qb-w1t2o-kk.jpg?v=1767591723"}, {"sku": "ZY05-KSSF11-QB-W1T2O2C-KK", "title": "PURPLE LEAF Caesar Enclosed Patio Conversation Set with Khaki Cushion Pillows and Ottoman for Porch Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf11-qb-w1t2o2c-kk.jpg?v=1767591723"}, {"sku": "ZY05-KSSF11-QB-W2T2O-KK", "title": "PURPLE LEAF Caesar Enclosed Patio Conversation Set with Khaki Cushion Pillows and Ottoman for Porch Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf11-qb-w2t2o-kk.jpg?v=1767591723"}, {"sku": "ZY05-KSSF12-QB-W1T1O-KK", "title": "PURPLE LEAF Caesar Enclosed Patio Conversation Set with Khaki Cushion Pillows and Ottoman for Porch Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf12-qb-w1t1o-kk.jpg?v=1767591723"}, {"sku": "ZY05-KSSF12-QB-W1T2O-KK", "title": "PURPLE LEAF Caesar Enclosed Patio Conversation Set with Khaki Cushion Pillows and Ottoman for Porch Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf12-qb-w1t2o-kk.jpg?v=1767591723"}, {"sku": "ZY05-KSSF20-QB-W2T2O-KK", "title": "PURPLE LEAF Caesar Enclosed Patio Conversation Set with Khaki Cushion Pillows and Ottoman for Porch Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf20-qb-w2t2o-kk.jpg?v=1767591723"}, {"sku": "ZY05-KSSF08-UX-W1T2O-KK", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Khaki Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf08-ux-w1t2o-kk.jpg?v=1763995923"}, {"sku": "ZY05-KSSF09-UX-W1T1O-KK", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Khaki Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf09-ux-w1t1o-kk_96c6a8dc-46ac-4f1b-8fde-04810eefa751.jpg?v=1767841554"}, {"sku": "ZY05-KSSF10-UX-WT-KK", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Khaki Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf10-ux-wt-kk_62ec5a55-3a83-409c-9a9a-2a20290ca167.jpg?v=1767841619"}, {"sku": "ZY05-KSSF10-UX-W1T1O-KK", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Khaki Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf10-ux-w1t1o-kk.jpg?v=1767841657"}, {"sku": "ZY05-KSSF11-UX-WT-KK", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Khaki Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf11-ux-wt-kk_4af95898-50ff-4d0a-9b74-3cfdc667cea9.jpg?v=1767841688"}, {"sku": "ZY05-KSSF13-UX-W2T-KK", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Khaki Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf13-ux-w2t-kk.jpg?v=1767841724"}, {"sku": "ZY05-KSSF18-UX-W2T2O-KK", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Khaki Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf18-ux-w2t2o-kk_4229acb0-ab0c-45b9-916f-21db7116a47b.jpg?v=1767841751"}, {"sku": "ZY05-KSSF06-UX-W2O-KK", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Khaki Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf06-ux-w2o-kk_2ff548c9-2c59-412b-a10f-89676e278129.jpg?v=1763995931"}, {"sku": "ZY05-KSSF07-UX-WO-KK", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Khaki Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf07-ux-wo-kk_f8003420-acbb-49f5-8cc3-c054b9f77a63.jpg?v=1763995936"}, {"sku": "ZY05-KSSF08-UX-KK", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Khaki Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf08-ux-kk.jpg?v=1763995938"}, {"sku": "ZY05-KSSF08-UX-W2O-KK", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Khaki Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf08-ux-w2o-kk_21e9d054-e76e-4856-8827-51cc446be347.jpg?v=1763995922"}, {"sku": "ZY05-KSSF10-UX-KK", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Khaki Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf10-ux-kk_6c019b4f-160b-4af9-88f5-c452ac6bdbce.jpg?v=1767841790"}, {"sku": "ZY05-KSSF10-UX-WO-KK", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Khaki Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf10-ux-wo-kk_1cc18e7b-d327-408c-955d-2692059899d4.jpg?v=1767841844"}, {"sku": "ZY05-KSSF11-UX-KK", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Khaki Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf11-ux-kk_72fa01f7-3547-4836-839a-7e90c4d1a854.jpg?v=1767841879"}, {"sku": "ZY05-KSSF06-LX-W1T1O-KK", "title": "PURPLE LEAF Caesar L-shaped Patio Conversation Set with Khaki Cushion Pillows and Ottoman Couch for Backyard Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf06-lx-w1t1o-kk_da23f54c-93eb-4aaf-be1e-295fd8f8aac9.jpg?v=1773911199"}, {"sku": "ZY05-KSSF07-LX-WT-KK", "title": "PURPLE LEAF Caesar L-shaped Patio Conversation Set with Khaki Cushion Pillows and Ottoman Couch for Backyard Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf07-lx-wt-kk.jpg?v=1775815382"}, {"sku": "ZY05-KSSF08-LX-WT-KK", "title": "PURPLE LEAF Caesar L-shaped Patio Conversation Set with Khaki Cushion Pillows and Ottoman Couch for Backyard Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf08-lx-wt-kk.jpg?v=1775815382"}, {"sku": "ZY05-KSSF12-LX-W2T2O-KK", "title": "PURPLE LEAF Caesar L-shaped Patio Conversation Set with Khaki Cushion Pillows and Ottoman Couch for Backyard Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf12-lx-w2t2o-kk_9317b7db-78d5-4d4c-bd0a-ddde61abf69a.jpg?v=1775815382"}, {"sku": "ZY05-KSSF14-LX-W2T-KK", "title": "PURPLE LEAF Caesar L-shaped Patio Conversation Set with Khaki Cushion Pillows and Ottoman Couch for Backyard Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf14-lx-w2t-kk.jpg?v=1775815382"}, {"sku": "ZY05-KSSF15-LX-W2T-KK", "title": "PURPLE LEAF Caesar L-shaped Patio Conversation Set with Khaki Cushion Pillows and Ottoman Couch for Backyard Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf15-lx-w2t-kk.jpg?v=1775815382"}, {"sku": "ZY05-KSSF04-LX-WO-KK", "title": "PURPLE LEAF Caesar L-shaped Patio Conversation Set with Khaki Cushion Pillows and Ottoman Couch for Backyard Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf04-lx-wo-kk.jpg?v=1775815382"}, {"sku": "ZY05-KSSF05-LX-KK", "title": "PURPLE LEAF Caesar L-shaped Patio Conversation Set with Khaki Cushion Pillows and Ottoman Couch for Backyard Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf05-lx-kk.jpg?v=1775815382"}, {"sku": "ZY05-KSSF08-LX-W2O-KK", "title": "PURPLE LEAF Caesar L-shaped Patio Conversation Set with Khaki Cushion Pillows and Ottoman Couch for Backyard Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf08-lx-w2o-kk.jpg?v=1775815382"}, {"sku": "ZY05-KSSF10-LX-KK", "title": "PURPLE LEAF Caesar L-shaped Patio Conversation Set with Khaki Cushion Pillows and Ottoman Couch for Backyard Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf10-lx-kk_b16825a8-9b70-4e41-8178-2f94b23df24e.jpg?v=1775815382"}, {"sku": "ZY05-KSSF12-LX-KK", "title": "PURPLE LEAF Caesar L-shaped Patio Conversation Set with Khaki Cushion Pillows and Ottoman Couch for Backyard Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf12-lx-kk.jpg?v=1775815382"}, {"sku": "ZY05-KSSF08-BB-GY", "title": "PURPLE LEAF Caesar Open-End Patio Conversation Set with Grey Cushion Pillows and Ottoman for Modern Outdoor Deck", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf08-bb-gy_f6cd7b3a-082e-409b-ae1e-23316c1f3727.jpg?v=1763995752"}, {"sku": "ZY05-KSSF06-BB-WT-GY", "title": "PURPLE LEAF Caesar Open-End Patio Conversation Set with Grey Cushion Pillows and Ottoman for Modern Outdoor Deck", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf06-bb-wt-gy_342ecd2b-e2a2-400a-89fa-303a3ecc6c8a.jpg?v=1763995735"}, {"sku": "ZY05-KSSF07-BB-WT-GY", "title": "PURPLE LEAF Caesar Open-End Patio Conversation Set with Grey Cushion Pillows and Ottoman for Modern Outdoor Deck", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf07-bb-wt-gy_b8f00d80-11bd-4aa3-aabd-a4e1ca9fd439.jpg?v=1763995741"}, {"sku": "ZY05-KSSF07-BB-W1T1O-GY", "title": "PURPLE LEAF Caesar Open-End Patio Conversation Set with Grey Cushion Pillows and Ottoman for Modern Outdoor Deck", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf07-bb-w1t1o-gy.jpg?v=1763995744"}, {"sku": "ZY05-KSSF08-BB-WT-GY", "title": "PURPLE LEAF Caesar Open-End Patio Conversation Set with Grey Cushion Pillows and Ottoman for Modern Outdoor Deck", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf08-bb-wt-gy_4eed96bc-e364-4814-9f50-07a75dc405d0.jpg?v=1763995765"}, {"sku": "ZY05-KSSF08-BB-W1T1O-GY", "title": "PURPLE LEAF Caesar Open-End Patio Conversation Set with Grey Cushion Pillows and Ottoman for Modern Outdoor Deck", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf08-bb-w1t1o-gy_b53a6c03-703e-4e2d-8de8-dd893ce4a464.jpg?v=1763995707"}, {"sku": "ZY05-KSSF06-UX-W2O-GY", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Grey Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf06-ux-w2o-gy.jpg?v=1766827936"}, {"sku": "ZY05-KSSF07-UX-WO-GY", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Grey Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf07-ux-wo-gy_b4b9f20d-05be-4624-af4e-5a40c7d6f588.jpg?v=1766827936"}, {"sku": "ZY05-KSSF08-UX-GY", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Grey Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf08-ux-gy.jpg?v=1766827936"}, {"sku": "ZY05-KSSF08-UX-W2O-GY", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Grey Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf08-ux-w2o-gy_ef9c1e52-acd5-477c-b47f-5e5c548513af.jpg?v=1766827936"}, {"sku": "ZY05-KSSF10-UX-GY", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Grey Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf10-ux-gy.jpg?v=1766827936"}, {"sku": "ZY05-KSSF10-UX-WO-GY", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Grey Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf10-ux-wo-gy.jpg?v=1766825944"}, {"sku": "ZY05-KSSF11-UX-GY", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Grey Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf11-ux-gy.jpg?v=1766827936"}, {"sku": "ZY05-KSSF08-UX-W1T2O-GY", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Grey Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf08-ux-w1t2o-gy_ce94ae0d-d067-4072-bef8-438dfacb21f8.jpg?v=1766827936"}, {"sku": "ZY05-KSSF09-UX-W1T1O-GY", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Grey Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf09-ux-w1t1o-gy_1.jpg?v=1766827936"}, {"sku": "ZY05-KSSF10-UX-WT-GY", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Grey Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf10-ux-wt-gy.jpg?v=1766827936"}, {"sku": "ZY05-KSSF10-UX-W1T1O-GY", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Grey Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf10-ux-w1t1o-gy.jpg?v=1766827936"}, {"sku": "ZY05-KSSF11-UX-WT-GY", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Grey Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf11-ux-wt-gy.jpg?v=1766826179"}, {"sku": "ZY05-KSSF13-UX-W2T-GY", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Grey Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf13-ux-w2t-gy.jpg?v=1766827936"}, {"sku": "ZY05-KSSF18-UX-W2T2O-GY", "title": "PURPLE LEAF Caesar U-Shaped Patio Conversation Set with Grey Cushion Pillows and Ottoman Couch for Patio Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf18-ux-w2t2o-gy.jpg?v=1766827936"}, {"sku": "ZY05-KSSF04-LX-WO-GY", "title": "PURPLE LEAF Caesar L-shaped Patio Conversation Set with Grey Cushion Pillows and Ottoman Couch for Backyard Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf04-lx-wo-gy.jpg?v=1770370453"}, {"sku": "ZY05-KSSF05-LX-GY", "title": "PURPLE LEAF Caesar L-shaped Patio Conversation Set with Grey Cushion Pillows and Ottoman Couch for Backyard Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf05-lx-gy.jpg?v=1773911234"}, {"sku": "ZY05-KSSF08-LX-W2O-GY", "title": "PURPLE LEAF Caesar L-shaped Patio Conversation Set with Grey Cushion Pillows and Ottoman Couch for Backyard Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf08-lx-w2o-gy_16005b60-ce7b-4322-986e-c2758373d415.jpg?v=1773911234"}, {"sku": "ZY05-KSSF10-LX-GY", "title": "PURPLE LEAF Caesar L-shaped Patio Conversation Set with Grey Cushion Pillows and Ottoman Couch for Backyard Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf10-lx-gy.jpg?v=1770370453"}, {"sku": "ZY05-KSSF12-LX-GY", "title": "PURPLE LEAF Caesar L-shaped Patio Conversation Set with Grey Cushion Pillows and Ottoman Couch for Backyard Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf12-lx-gy.jpg?v=1773911234"}, {"sku": "ZY05-KSSF06-LX-W1T1O-GY", "title": "PURPLE LEAF Caesar L-shaped Patio Conversation Set with Grey Cushion Pillows and Ottoman Couch for Backyard Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf06-lx-w1t1o-gy.jpg?v=1773911234"}, {"sku": "ZY05-KSSF07-LX-WT-GY", "title": "PURPLE LEAF Caesar L-shaped Patio Conversation Set with Grey Cushion Pillows and Ottoman Couch for Backyard Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf07-lx-wt-gy_8ea8b227-465b-49cf-a789-7d1f6b3d80ea.jpg?v=1773911234"}, {"sku": "ZY05-KSSF08-LX-WT-GY", "title": "PURPLE LEAF Caesar L-shaped Patio Conversation Set with Grey Cushion Pillows and Ottoman Couch for Backyard Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf08-lx-wt-gy_0a726d16-6bb3-4af1-a3e8-dc9095c17fea.jpg?v=1770370453"}, {"sku": "ZY05-KSSF12-LX-W2T2O-GY", "title": "PURPLE LEAF Caesar L-shaped Patio Conversation Set with Grey Cushion Pillows and Ottoman Couch for Backyard Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf12-lx-w2t2o-gy.jpg?v=1770370453"}, {"sku": "ZY05-KSSF14-LX-W2T-GY", "title": "PURPLE LEAF Caesar L-shaped Patio Conversation Set with Grey Cushion Pillows and Ottoman Couch for Backyard Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf12-lx-w2t2o-gy.jpg?v=1770370453"}, {"sku": "ZY05-KSSF15-LX-W2T-GY", "title": "PURPLE LEAF Caesar L-shaped Patio Conversation Set with Grey Cushion Pillows and Ottoman Couch for Backyard Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-kssf15-lx-w2t-gy.jpg?v=1770370453"}, {"sku": "ZY04-STRN-DR-KK", "title": "PURPLE LEAF Sanori Beige Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/ZY04-STRN-DR-KK.jpg?v=1764835897"}, {"sku": "ZY04-STRN-ZJ-KK", "title": "PURPLE LEAF Sanori Beige Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/ZY04-STRN-ZJ-KK.jpg?v=1764835897"}, {"sku": "ZY04-STRN-WFS-KK", "title": "PURPLE LEAF Sanori Beige Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/ZY04-STRN-WFS-KK.jpg?v=1764835897"}, {"sku": "ZY04-STRN-FS-KK", "title": "PURPLE LEAF Sanori Beige Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/ZY04-STRN-FS-KK.jpg?v=1757998456"}, {"sku": "ZY04-STRN-JT-KK", "title": "PURPLE LEAF Sanori Beige Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/ZY04-STRN-JT-KK.jpg?v=1757998457"}, {"sku": "ZY04-STRN-CJ-KK", "title": "PURPLE LEAF Sanori Beige Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/ZY04-STRN-CJ-KK.jpg?v=1757998458"}, {"sku": "ZY04-STRN-DR-GY", "title": "PURPLE LEAF Sanori Grey Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/ZY04-STRN-DR-GY.jpg?v=1764835907"}, {"sku": "ZY04-STRN-ZJ-GY", "title": "PURPLE LEAF Sanori Grey Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/ZY04-STRN-ZJ-GY.jpg?v=1764835907"}, {"sku": "ZY04-STRN-WFS-GY", "title": "PURPLE LEAF Sanori Grey Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/ZY04-STRN-WFS-GY.jpg?v=1764835907"}, {"sku": "ZY04-STRN-FS-GY", "title": "PURPLE LEAF Sanori Grey Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/ZY04-STRN-FS-GY.jpg?v=1757998449"}, {"sku": "ZY04-STRN-JT-GY", "title": "PURPLE LEAF Sanori Grey Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/ZY04-STRN-JT-GY.jpg?v=1757998450"}, {"sku": "ZY04-STRN-CJ-GY", "title": "PURPLE LEAF Sanori Grey Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/ZY04-STRN-CJ-GY.jpg?v=1757998452"}, {"sku": "ZY04-STRN-KKCT-3", "title": "PURPLE LEAF Sanori Classical without Table Beige Patio Conversation Set with  Cushions and Ottoman for Deck", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-kkct-3.jpg?v=1775813177"}, {"sku": "ZY04-STRN-KKCT-6", "title": "PURPLE LEAF Sanori Classical without Table Beige Patio Conversation Set with  Cushions and Ottoman for Deck", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-kkct-6.jpg?v=1775813177"}, {"sku": "ZY04-STRN-KKCT-6-2D", "title": "PURPLE LEAF Sanori Classical without Table Beige Patio Conversation Set with  Cushions and Ottoman for Deck", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-kkct-6-2d.jpg?v=1775813177"}, {"sku": "ZY04-STRN-KKCT-8-2D", "title": "PURPLE LEAF Sanori Classical without Table Beige Patio Conversation Set with  Cushions and Ottoman for Deck", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-kkct-8-2d.jpg?v=1775813177"}, {"sku": "ZY04-STRN-KKCT-9", "title": "PURPLE LEAF Sanori Classical without Table Beige Patio Conversation Set with  Cushions and Ottoman for Deck", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-kkct-9.jpg?v=1775813177"}, {"sku": "ZY04-STRN-GYCT-3", "title": "PURPLE LEAF Sanori Classical without Table Grey Patio Conversation Set with  Cushions and Ottoman for Deck", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-gyct-3.jpg?v=1775813141"}, {"sku": "ZY04-STRN-GYCT-4", "title": "PURPLE LEAF Sanori Classical without Table Grey Patio Conversation Set with  Cushions and Ottoman for Deck", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-gyct-4_1_c16e0663-436e-485e-8662-3dba8e71ceff.jpg?v=1775813141"}, {"sku": "ZY04-STRN-GYCT-6", "title": "PURPLE LEAF Sanori Classical without Table Grey Patio Conversation Set with  Cushions and Ottoman for Deck", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-gyct-6.jpg?v=1775813141"}, {"sku": "ZY04-STRN-GYCT-6-2D", "title": "PURPLE LEAF Sanori Classical without Table Grey Patio Conversation Set with  Cushions and Ottoman for Deck", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-gyct-6-2d.jpg?v=1775813141"}, {"sku": "ZY04-STRN-GYCT-8-2D", "title": "PURPLE LEAF Sanori Classical without Table Grey Patio Conversation Set with  Cushions and Ottoman for Deck", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-gyct-8-2d.jpg?v=1775813141"}, {"sku": "ZY04-STRN-GYCT-9", "title": "PURPLE LEAF Sanori Classical without Table Grey Patio Conversation Set with  Cushions and Ottoman for Deck", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-gyct-9.jpg?v=1775813141"}, {"sku": "ZY04-STRN-GYUX-9+1", "title": "PURPLE LEAF Sanori U-Shaped Patio Couch Set Modular Sofa with Grey Cushions and Ottoman for Balcony", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-gyux-9_1_2.jpg?v=1776675457"}, {"sku": "ZY04-STRN-GYUX-11+2", "title": "PURPLE LEAF Sanori U-Shaped Patio Couch Set Modular Sofa with Grey Cushions and Ottoman for Balcony", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-gyux-11_2_1.jpg?v=1776675457"}, {"sku": "ZY04-STRN-GYUX-8", "title": "PURPLE LEAF Sanori U-Shaped Patio Couch Set Modular Sofa with Grey Cushions and Ottoman for Balcony", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-gyux-8_57566f42-2e5d-4401-b195-bac48139b735.jpg?v=1776675457"}, {"sku": "ZY04-STRN-GYGF-6", "title": "PURPLE LEAF Sanori Grey Symmetrical Outdoor Sectional  Modular Design with Cushions and Ottoman for Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-gygf-6_c2908573-981f-4b57-976b-b28bfca0f8b6.jpg?v=1775813046"}, {"sku": "ZY04-STRN-GYGF-8", "title": "PURPLE LEAF Sanori Grey Symmetrical Outdoor Sectional  Modular Design with Cushions and Ottoman for Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-gygf-8_1_08907c44-5d74-418d-8918-99443d0e04c1.jpg?v=1775813046"}, {"sku": "ZY04-STRN-GYGF-10", "title": "PURPLE LEAF Sanori Grey Symmetrical Outdoor Sectional  Modular Design with Cushions and Ottoman for Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-gygf-10.jpg?v=1775813046"}, {"sku": "ZY04-STRN-GYGF-9+1", "title": "PURPLE LEAF Sanori Grey Symmetrical Outdoor Sectional  Modular Design with Cushions and Ottoman for Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-gygf-9_1_e174e0d7-2eeb-4ec7-ac3a-c503c13edb66.jpg?v=1775813046"}, {"sku": "ZY04-STRN-GYCT-10+2-2D4F", "title": "PURPLE LEAF Sanori Grey Symmetrical Outdoor Sectional  Modular Design with Cushions and Ottoman for Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-gyct-10_2-2d4f.jpg?v=1775813046"}, {"sku": "ZY04-STRN-GYCT-10+1-4D", "title": "PURPLE LEAF Sanori Grey Symmetrical Outdoor Sectional  Modular Design with Cushions and Ottoman for Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-gyct-10_2-2d4f.jpg?v=1775813046"}, {"sku": "ZY04-STRN-GYCT-4+1", "title": "PURPLE LEAF Sanori Classical with Table Grey Patio Conversation Set with  Cushions and Ottoman for Poolside", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-gyct-4_1.jpg?v=1775813229"}, {"sku": "ZY04-STRN-GYCT-5+1", "title": "PURPLE LEAF Sanori Classical with Table Grey Patio Conversation Set with  Cushions and Ottoman for Poolside", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-gyct-5_1_6a976d5c-4c1d-421f-a434-531842792d23.jpg?v=1775813229"}, {"sku": "ZY04-STRN-GYCT-6+1", "title": "PURPLE LEAF Sanori Classical with Table Grey Patio Conversation Set with  Cushions and Ottoman for Poolside", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-gyct-6_1_71340909-4f56-45df-9380-b05c0524d6e3.jpg?v=1775813229"}, {"sku": "ZY04-STRN-GYCT-8+1", "title": "PURPLE LEAF Sanori Classical with Table Grey Patio Conversation Set with  Cushions and Ottoman for Poolside", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-gyct-8_1_d97b33c6-7d81-467d-81d2-ac81ea16f25c.jpg?v=1775813229"}, {"sku": "ZY04-STRN-GYCT-8+2", "title": "PURPLE LEAF Sanori Classical with Table Grey Patio Conversation Set with  Cushions and Ottoman for Poolside", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-gyct-8_2_e9b22fae-e871-4662-89cd-c349eb410b4f.jpg?v=1775813229"}, {"sku": "ZY04-STRN-GYCT-10+1", "title": "PURPLE LEAF Sanori Classical with Table Grey Patio Conversation Set with  Cushions and Ottoman for Poolside", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-gyct-10_1_c4e1d170-69c6-43ee-bec3-e6dba11c6df5.jpg?v=1775813229"}, {"sku": "ZY04-STRN-KKCT-4+1", "title": "PURPLE LEAF Sanori Classical with Table Beige Patio Conversation Set with  Cushions and Ottoman for Poolside", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-kkct-4_1.jpg?v=1775813270"}, {"sku": "ZY04-STRN-KKCT-5+1", "title": "PURPLE LEAF Sanori Classical with Table Beige Patio Conversation Set with  Cushions and Ottoman for Poolside", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-kkct-5_1_2_fdd35cb4-0b3a-45bf-99c9-f48d8af01d17.jpg?v=1775813270"}, {"sku": "ZY04-STRN-KKCT-6+1", "title": "PURPLE LEAF Sanori Classical with Table Beige Patio Conversation Set with  Cushions and Ottoman for Poolside", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-kkct-6_1_0336ddc8-cd19-4ffa-beaf-6a849a1d5c22.jpg?v=1775813270"}, {"sku": "ZY04-STRN-KKCT-8+1", "title": "PURPLE LEAF Sanori Classical with Table Beige Patio Conversation Set with  Cushions and Ottoman for Poolside", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-kkct-8_1_1_5e7d0e70-6d89-4dc7-83ed-d2b426bd8a17.jpg?v=1775813270"}, {"sku": "ZY04-STRN-KKCT-8+2", "title": "PURPLE LEAF Sanori Classical with Table Beige Patio Conversation Set with  Cushions and Ottoman for Poolside", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/1_727be5a3-4d0c-4808-b0b2-0f59f3235ac8.jpg?v=1775813270"}, {"sku": "ZY04-STRN-KKCT-10+1", "title": "PURPLE LEAF Sanori Classical with Table Beige Patio Conversation Set with  Cushions and Ottoman for Poolside", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-kkct-10_1_8a4cc16a-ae07-4c8c-b5f5-66f6381e49a0.jpg?v=1775813270"}, {"sku": "ZY04-STRN-KKGF-6", "title": "PURPLE LEAF Sanori Beige Symmetrical Outdoor Sectional  Modular Design with Cushions and Ottoman for Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-kkgf-6.jpg?v=1775813077"}, {"sku": "ZY04-STRN-KKGF-8", "title": "PURPLE LEAF Sanori Beige Symmetrical Outdoor Sectional  Modular Design with Cushions and Ottoman for Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-kkgf-8_2.jpg?v=1775813077"}, {"sku": "ZY04-STRN-KKGF-10", "title": "PURPLE LEAF Sanori Beige Symmetrical Outdoor Sectional  Modular Design with Cushions and Ottoman for Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-kkgf-10.jpg?v=1775813077"}, {"sku": "ZY04-STRN-KKGF-9+1", "title": "PURPLE LEAF Sanori Beige Symmetrical Outdoor Sectional  Modular Design with Cushions and Ottoman for Porch", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-kkgf-9_1_2_a12b83c1-5dc8-4ee7-89de-9740f72aee90.jpg?v=1775813077"}, {"sku": "ZY04-STRN-KKUX-9+1", "title": "PURPLE LEAF Sanori U-Shaped Patio Couch Set Modular Sofa with Beige Cushions and Ottoman for Balcony", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-kkux-9_1_2.jpg?v=1776675746"}, {"sku": "ZY04-STRN-KKUX-11+2", "title": "PURPLE LEAF Sanori U-Shaped Patio Couch Set Modular Sofa with Beige Cushions and Ottoman for Balcony", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-kkux-11_2_1.jpg?v=1776675746"}, {"sku": "ZY04-STRN-KKUX-8", "title": "PURPLE LEAF Sanori U-Shaped Patio Couch Set Modular Sofa with Beige Cushions and Ottoman for Balcony", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-kkux-8_1.jpg?v=1776675746"}, {"sku": "ZY04-STRN-GYGF-5+1", "title": "PURPLE LEAF Sanori L-Shaped Patio Couch Set Modular Sofa with Grey Cushions and Ottoman for Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-gygf-5_1.jpg?v=1776419713"}, {"sku": "ZY04-STRN-GY7X-6+1", "title": "PURPLE LEAF Sanori L-Shaped Patio Couch Set Modular Sofa with Grey Cushions and Ottoman for Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-gy7x-6_1_1.jpg?v=1776419713"}, {"sku": "ZY04-STRN-GY7X-7+1", "title": "PURPLE LEAF Sanori L-Shaped Patio Couch Set Modular Sofa with Grey Cushions and Ottoman for Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-gy7x-7_1_1.jpg?v=1776419713"}, {"sku": "ZY04-STRN-GY7X-7+1-2F", "title": "PURPLE LEAF Sanori L-Shaped Patio Couch Set Modular Sofa with Grey Cushions and Ottoman for Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-gy7x-7_1-2f.jpg?v=1776419713"}, {"sku": "ZY04-STRN-GYGF-8+1", "title": "PURPLE LEAF Sanori L-Shaped Patio Couch Set Modular Sofa with Grey Cushions and Ottoman for Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-gygf-8_1.jpg?v=1776419713"}, {"sku": "ZY04-STRN-GY7X-9+1", "title": "PURPLE LEAF Sanori L-Shaped Patio Couch Set Modular Sofa with Grey Cushions and Ottoman for Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-gy7x-9_1.jpg?v=1776419713"}, {"sku": "ZY04-STRN-GYGF-4", "title": "PURPLE LEAF Sanori L-Shaped Patio Couch Set Modular Sofa with Grey Cushions and Ottoman for Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-gygf-4_1.jpg?v=1776419713"}, {"sku": "ZY04-STRN-GY7X-6", "title": "PURPLE LEAF Sanori L-Shaped Patio Couch Set Modular Sofa with Grey Cushions and Ottoman for Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-gy7x-6.jpg?v=1776419713"}, {"sku": "ZY04-STRN-GYGF-7", "title": "PURPLE LEAF Sanori L-Shaped Patio Couch Set Modular Sofa with Grey Cushions and Ottoman for Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-gygf-7.jpg?v=1776419713"}, {"sku": "ZY04-STRN-KKGF-5+1", "title": "PURPLE LEAF Sanori L-Shaped Patio Couch Set Modular Sofa with Beige Cushions and Ottoman for Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-kkgf-5_1_2.jpg?v=1776675746"}, {"sku": "ZY04-STRN-KK7X-6+1", "title": "PURPLE LEAF Sanori L-Shaped Patio Couch Set Modular Sofa with Beige Cushions and Ottoman for Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-kk7x-6_1_1.jpg?v=1776675746"}, {"sku": "ZY04-STRN-KK7X-7+1-2F", "title": "PURPLE LEAF Sanori L-Shaped Patio Couch Set Modular Sofa with Beige Cushions and Ottoman for Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-kk7x-7_1-2f.jpg?v=1776675746"}, {"sku": "ZY04-STRN-KK7X-7+1", "title": "PURPLE LEAF Sanori L-Shaped Patio Couch Set Modular Sofa with Beige Cushions and Ottoman for Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-kk7x-7_1_1.jpg?v=1776675746"}, {"sku": "ZY04-STRN-KKGF-8+1", "title": "PURPLE LEAF Sanori L-Shaped Patio Couch Set Modular Sofa with Beige Cushions and Ottoman for Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-kkgf-8_1_1.jpg?v=1776675746"}, {"sku": "ZY04-STRN-KK7X-9+1", "title": "PURPLE LEAF Sanori L-Shaped Patio Couch Set Modular Sofa with Beige Cushions and Ottoman for Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-kk7x-9_1_2.jpg?v=1776675746"}, {"sku": "ZY04-STRN-KK7X-6", "title": "PURPLE LEAF Sanori L-Shaped Patio Couch Set Modular Sofa with Beige Cushions and Ottoman for Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-kk7x-6.jpg?v=1776675746"}, {"sku": "ZY04-STRN-KKGF-7", "title": "PURPLE LEAF Sanori L-Shaped Patio Couch Set Modular Sofa with Beige Cushions and Ottoman for Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-kkgf-7_1.jpg?v=1776675746"}, {"sku": "ZY04-STRN-KKGF-4", "title": "PURPLE LEAF Sanori L-Shaped Patio Couch Set Modular Sofa with Beige Cushions and Ottoman for Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy04-strn-kkgf-4_1.jpg?v=1776675746"}, {"sku": "ZY06-MBSF06+1-CT-WH", "title": "PURPLE LEAF Sicilia Classical Modular Outdoor Sectional with Sunbrella White Cushions Flexible Layout for Boutique Hotel Style Patio", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/ZY06-MBSF06_1-CT-WH_10af67d3-f649-4147-a7df-2191091d5d9f.jpg?v=1780040442"}, {"sku": "ZY06-MBSF07+1-CT-WH", "title": "PURPLE LEAF Sicilia Classical Modular Outdoor Sectional with Sunbrella White Cushions Flexible Layout for Boutique Hotel Style Patio", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/ZY06-MBSF07_1-CT-WH_5fb723f2-acdc-41d4-8769-51f16796cfa4.jpg?v=1780040451"}, {"sku": "ZY06-MBSF10-UX-CT-WH", "title": "PURPLE LEAF Sicilia Classical Modular Outdoor Sectional with Sunbrella White Cushions Flexible Layout for Boutique Hotel Style Patio", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/ZY06-MBSF10-UX-CT-WH_c7388729-12ae-40d9-ae97-423f52d6d1b5.jpg?v=1780040451"}, {"sku": "ZY06-MBSF06+1-CT-TP", "title": "PURPLE LEAF Sicilia Classical Modular Outdoor Sectional with Sunbrella Taupe Cushions Flexible Layout for Hotel-Inspired Outdoor Lounge", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-mbsf06_1-ct-tp.jpg?v=1777079586"}, {"sku": "ZY06-MBSF07+1-CT-TP", "title": "PURPLE LEAF Sicilia Classical Modular Outdoor Sectional with Sunbrella Taupe Cushions Flexible Layout for Hotel-Inspired Outdoor Lounge", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-mbsf07_1-ct-tp.jpg?v=1777079622"}, {"sku": "ZY06-MBSF10-UX-CT-TP", "title": "PURPLE LEAF Sicilia Classical Modular Outdoor Sectional with Sunbrella Taupe Cushions Flexible Layout for Hotel-Inspired Outdoor Lounge", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-mbsf10-ux-ct-tp.jpg?v=1777079640"}, {"sku": "ZY06-MBSF06+1-CT-LB", "title": "PURPLE LEAF Sicilia Classical Modular Outdoor Sectional with Sunbrella Khaki Cushions Flexible Layout for Porch Relaxation Space", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/ZY06-MBSF06_1-CT-LB_9a2f04eb-a7e9-490c-bb16-eee84bb4ee3d.jpg?v=1780040575"}, {"sku": "ZY06-MBSF07+1-CT-LB", "title": "PURPLE LEAF Sicilia Classical Modular Outdoor Sectional with Sunbrella Khaki Cushions Flexible Layout for Porch Relaxation Space", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/ZY06-MBSF07_1-CT-LB_444c0401-8645-4912-b09b-0ea096f6491d.jpg?v=1780040575"}, {"sku": "ZY06-MBSF10-UX-CT-LB", "title": "PURPLE LEAF Sicilia Classical Modular Outdoor Sectional with Sunbrella Khaki Cushions Flexible Layout for Porch Relaxation Space", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/ZY06-MBSF10-UX-CT-LB_a256176d-8d92-412e-b934-bc6235099d60.jpg?v=1780040575"}, {"sku": "ZY06-MBSF08-YZ-WH", "title": "PURPLE LEAF Sicilia U-Shaped Modular Outdoor Sectional with Sunbrella White Cushions Flexible Layout for Commercial Lounge Areas", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-mbsf08-yz-wh.jpg?v=1780033963"}, {"sku": "ZY06-MBSF07+1-GF-WH", "title": "PURPLE LEAF Sicilia U-Shaped Modular Outdoor Sectional with Sunbrella White Cushions Flexible Layout for Commercial Lounge Areas", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-mbsf07_1-gf-wh.jpg?v=1780034067"}, {"sku": "ZY06-MBSF08+1-GF-WH", "title": "PURPLE LEAF Sicilia U-Shaped Modular Outdoor Sectional with Sunbrella White Cushions Flexible Layout for Commercial Lounge Areas", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-mbsf08_1-gf-wh.jpg?v=1780034223"}, {"sku": "ZY06-MBSF08-YZ-TP", "title": "PURPLE LEAF Sicilia U-Shaped Modular Outdoor Sectional with Sunbrella Taupe Cushions Flexible Layout for Luxury Resort-Style Patio", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-mbsf08-yz-tp_045ba5c4-f2ad-4f08-b24a-b7d6b73e837d.jpg?v=1777024166"}, {"sku": "ZY06-MBSF07+1-GF-TP", "title": "PURPLE LEAF Sicilia U-Shaped Modular Outdoor Sectional with Sunbrella Taupe Cushions Flexible Layout for Luxury Resort-Style Patio", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-mbsf07_1-gf-tp_d7e984d1-a4a2-45e1-a91f-9eef8e49fc9a.jpg?v=1777024193"}, {"sku": "ZY06-MBSF08-UX-TP", "title": "PURPLE LEAF Sicilia U-Shaped Modular Outdoor Sectional with Sunbrella Taupe Cushions Flexible Layout for Luxury Resort-Style Patio", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-mbsf08-ux-tp_fe9ced9b-bd68-40cc-b8d3-a3e332647cbe.jpg?v=1777024216"}, {"sku": "ZY06-MBSF08+1-GF-TP", "title": "PURPLE LEAF Sicilia U-Shaped Modular Outdoor Sectional with Sunbrella Taupe Cushions Flexible Layout for Luxury Resort-Style Patio", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-mbsf08_1-gf-tp_62b4f37a-1b85-4e3f-a87d-2924a164350b.jpg?v=1777024239"}, {"sku": "ZY06-MBSF08-YZ-LB", "title": "PURPLE LEAF Sicilia U-Shaped Modular Outdoor Sectional with Sunbrella Khaki Cushions Flexible Layout for Commercial Outdoor Spaces", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-mbsf08-yz-lb.jpg?v=1780037267"}, {"sku": "ZY06-MBSF07+1-GF-LB", "title": "PURPLE LEAF Sicilia U-Shaped Modular Outdoor Sectional with Sunbrella Khaki Cushions Flexible Layout for Commercial Outdoor Spaces", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-mbsf07_1-gf-lb.jpg?v=1780037367"}, {"sku": "ZY06-MBSF08-UX-LB", "title": "PURPLE LEAF Sicilia U-Shaped Modular Outdoor Sectional with Sunbrella Khaki Cushions Flexible Layout for Commercial Outdoor Spaces", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-mbsf08-ux-lb.jpg?v=1780037413"}, {"sku": "ZY06-MBSF08+1-GF-LB", "title": "PURPLE LEAF Sicilia U-Shaped Modular Outdoor Sectional with Sunbrella Khaki Cushions Flexible Layout for Commercial Outdoor Spaces", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-mbsf08_1-gf-lb.jpg?v=1780037474"}, {"sku": "ZY06-MBSF07+1-YZ-WH", "title": "PURPLE LEAF Sicilia L-Shaped Modular Outdoor Sectional with Sunbrella White Cushions Flexible Layout for Minimalist Modern Patio", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-mbsf07_1-yz-wh.jpg?v=1780037682"}, {"sku": "ZY06-MBSF05+1-CLS-WH", "title": "PURPLE LEAF Sicilia L-Shaped Modular Outdoor Sectional with Sunbrella White Cushions Flexible Layout for Minimalist Modern Patio", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-mbsf05_1-cls-wh.jpg?v=1780037806"}, {"sku": "ZY06-MBSF05+1-YZ-WH", "title": "PURPLE LEAF Sicilia L-Shaped Modular Outdoor Sectional with Sunbrella White Cushions Flexible Layout for Minimalist Modern Patio", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/ZY06-MBSF05_1-YZ-WH_48cc4866-6cab-4de3-b3d4-dd3f64a90df1.jpg?v=1780037996"}, {"sku": "ZY06-MBSF04-YZ-WH", "title": "PURPLE LEAF Sicilia L-Shaped Modular Outdoor Sectional with Sunbrella White Cushions Flexible Layout for Minimalist Modern Patio", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-mbsf04-yz-wh_14a110fe-c587-465e-8e38-850e1ef4f8cc.jpg?v=1780038080"}, {"sku": "ZY06-MBSF07+1-YZ-TP", "title": "PURPLE LEAF Sicilia L-Shaped Modular Outdoor Sectional with Sunbrella Taupe Cushions Flexible Layout for Modern Patio Corner Lounge", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-mbsf07_1-yz-tp_a6c5c3f5-3996-4a61-9eea-9ce6678453ea.jpg?v=1777024905"}, {"sku": "ZY06-MBSF05+1-CLS-TP", "title": "PURPLE LEAF Sicilia L-Shaped Modular Outdoor Sectional with Sunbrella Taupe Cushions Flexible Layout for Modern Patio Corner Lounge", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-mbsf05_1-cls-tp.jpg?v=1777025018"}, {"sku": "ZY06-MBSF05+1-YZ-TP", "title": "PURPLE LEAF Sicilia L-Shaped Modular Outdoor Sectional with Sunbrella Taupe Cushions Flexible Layout for Modern Patio Corner Lounge", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-mbsf05_1-yz-tp.jpg?v=1777025045"}, {"sku": "ZY06-MBSF04-YZ-TP", "title": "PURPLE LEAF Sicilia L-Shaped Modular Outdoor Sectional with Sunbrella Taupe Cushions Flexible Layout for Modern Patio Corner Lounge", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-mbsf04-yz-tp.jpg?v=1777025068"}, {"sku": "ZY06-MBSF07+1-YZ-LB", "title": "PURPLE LEAF Sicilia L-Shaped Modular Outdoor Sectional with Sunbrella Khaki Cushions Flexible Layout for Poolside Casual Lounge", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/ZY06-MBSF07_1-YZ-LB_782d666e-6dfd-482b-9763-baf8241411ad.jpg?v=1780038242"}, {"sku": "ZY06-MBSF05+1-CLS-LB", "title": "PURPLE LEAF Sicilia L-Shaped Modular Outdoor Sectional with Sunbrella Khaki Cushions Flexible Layout for Poolside Casual Lounge", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/ZY06-MBSF05_1-CLS-LB_b7d5fee9-41ad-4bad-b2d5-d53f83b3ef49.jpg?v=1780038265"}, {"sku": "ZY06-MBSF05+1-YZ-LB", "title": "PURPLE LEAF Sicilia L-Shaped Modular Outdoor Sectional with Sunbrella Khaki Cushions Flexible Layout for Poolside Casual Lounge", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/ZY06-MBSF05_1-YZ-LB_3e252b6e-149b-4757-89e4-c9d30d778d88.jpg?v=1780038258"}, {"sku": "ZY06-MBSF04-YZ-LB", "title": "PURPLE LEAF Sicilia L-Shaped Modular Outdoor Sectional with Sunbrella Khaki Cushions Flexible Layout for Poolside Casual Lounge", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/ZY06-MBSF04-YZ-LB_a0a6bdfb-a74a-4f81-a8d3-88d3afb8bad7.jpg?v=1780038268"}, {"sku": "ZY06-SF02-MB", "title": "PURPLE LEAF Sicilia Classical Modular Outdoor Sectional with Oatmeal Greige Cushions Flexible Layout for Commercial Spaces", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-sf02-mb_81898e8f-0ac6-4821-8df1-7c3fa094b8f3.jpg?v=1775814232"}, {"sku": "ZY06-SF04-MB", "title": "PURPLE LEAF Sicilia Classical Modular Outdoor Sectional with Oatmeal Greige Cushions Flexible Layout for Commercial Spaces", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-sf04-mb_1_28a8cd65-53a9-45b3-864b-6f401379fc61.jpg?v=1775814232"}, {"sku": "ZY06-SF05-MB", "title": "PURPLE LEAF Sicilia Classical Modular Outdoor Sectional with Oatmeal Greige Cushions Flexible Layout for Commercial Spaces", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-sf05-mb_1_e3b01e80-2c1c-4bc5-88d8-1448a3dc88bc.jpg?v=1775814232"}, {"sku": "ZY06-MBSF05+1-CT-KK", "title": "PURPLE LEAF Sicilia Classical Modular Outdoor Sectional with Oatmeal Greige Cushions Flexible Layout for Commercial Spaces", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-mbsf05_1-ct-kk_1521fd31-5359-4b6d-946a-31d46d90c335.jpg?v=1775814232"}, {"sku": "ZY06-MBSF06+1-CT-KK", "title": "PURPLE LEAF Sicilia Classical Modular Outdoor Sectional with Oatmeal Greige Cushions Flexible Layout for Commercial Spaces", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-mbsf06_1-ct-kk.jpg?v=1775814702"}, {"sku": "ZY06-MBSF07+1-CT-KK", "title": "PURPLE LEAF Sicilia Classical Modular Outdoor Sectional with Oatmeal Greige Cushions Flexible Layout for Commercial Spaces", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-mbsf07_1-ct-kk_4916aa55-69d8-4e2c-99ee-87d5d5691997.jpg?v=1777002810"}, {"sku": "ZY06-MBSF10-UX-CT-KK", "title": "PURPLE LEAF Sicilia Classical Modular Outdoor Sectional with Oatmeal Greige Cushions Flexible Layout for Commercial Spaces", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-mbsf10-ux-ct-kk.jpg?v=1775814470"}, {"sku": "ZY06-MBSF08-YZ-KK", "title": "PURPLE LEAF Sicilia U-Shaped Modular Outdoor Sectional with Oatmeal Greige Cushions Flexible Layout for Porch Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-mbsf08-yz-kk.jpg?v=1776676818"}, {"sku": "ZY06-MBSF07+1-GF-KK", "title": "PURPLE LEAF Sicilia U-Shaped Modular Outdoor Sectional with Oatmeal Greige Cushions Flexible Layout for Porch Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-mbsf07_1-gf-kk.jpg?v=1776676818"}, {"sku": "ZY06-MBSF08-UX-KK", "title": "PURPLE LEAF Sicilia U-Shaped Modular Outdoor Sectional with Oatmeal Greige Cushions Flexible Layout for Porch Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-mbsf08-ux-kk_68eb336d-55a1-46a7-8dd3-1ba6b358dbf6.jpg?v=1776676818"}, {"sku": "ZY06-MBSF08+1-GF-KK", "title": "PURPLE LEAF Sicilia U-Shaped Modular Outdoor Sectional with Oatmeal Greige Cushions Flexible Layout for Porch Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-mbsf08_1-gf-kk.jpg?v=1776676818"}, {"sku": "ZY06-SF10-LT-MB", "title": "PURPLE LEAF Sicilia U-Shaped Modular Outdoor Sectional with Oatmeal Greige Cushions Flexible Layout for Porch Backyard", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-sf10-lt-mb_1af01a80-eb0a-4e7e-b39b-d62fd15bda8b.jpg?v=1776676818"}, {"sku": "ZY06-SF07-MB", "title": "PURPLE LEAF Sicilia L-Shaped Modular Outdoor Sectional with Oatmeal Greige Cushions Flexible Layout for Garden Poolside", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-sf07-mb_1.jpg?v=1776676922"}, {"sku": "ZY06-MBSF07+1-YZ-KK", "title": "PURPLE LEAF Sicilia L-Shaped Modular Outdoor Sectional with Oatmeal Greige Cushions Flexible Layout for Garden Poolside", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-mbsf07_1-yz-kk_90d30b1f-76fe-40aa-8b24-443e66e56667.jpg?v=1776676922"}, {"sku": "ZY06-MBSF07-YZ-KK", "title": "PURPLE LEAF Sicilia L-Shaped Modular Outdoor Sectional with Oatmeal Greige Cushions Flexible Layout for Garden Poolside", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-mbsf07-yz-kk.jpg?v=1776676922"}, {"sku": "ZY06-MBSF06+1-YZ-KK", "title": "PURPLE LEAF Sicilia L-Shaped Modular Outdoor Sectional with Oatmeal Greige Cushions Flexible Layout for Garden Poolside", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-mbsf06_1-yz-kk.jpg?v=1776676922"}, {"sku": "ZY06-SF05-LT-MB", "title": "PURPLE LEAF Sicilia L-Shaped Modular Outdoor Sectional with Oatmeal Greige Cushions Flexible Layout for Garden Poolside", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-sf05-lt-mb_1.jpg?v=1776676922"}, {"sku": "ZY06-MBSF05+1-CLS-KK", "title": "PURPLE LEAF Sicilia L-Shaped Modular Outdoor Sectional with Oatmeal Greige Cushions Flexible Layout for Garden Poolside", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-mbsf05_1-cls-kk.jpg?v=1776676922"}, {"sku": "ZY06-SF05-ZB-MB", "title": "PURPLE LEAF Sicilia L-Shaped Modular Outdoor Sectional with Oatmeal Greige Cushions Flexible Layout for Garden Poolside", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-sf05-zb-mb_1.jpg?v=1776676922"}, {"sku": "ZY06-MBSF05+1-YZ-KK", "title": "PURPLE LEAF Sicilia L-Shaped Modular Outdoor Sectional with Oatmeal Greige Cushions Flexible Layout for Garden Poolside", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-mbsf05_1-yz-kk.jpg?v=1776676922"}, {"sku": "ZY06-MBSF04-YZ-KK", "title": "PURPLE LEAF Sicilia L-Shaped Modular Outdoor Sectional with Oatmeal Greige Cushions Flexible Layout for Garden Poolside", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-mbsf04-yz-kk.jpg?v=1776676922"}, {"sku": "ZY06-SF03-MB", "title": "PURPLE LEAF Sicilia L-Shaped Modular Outdoor Sectional with Oatmeal Greige Cushions Flexible Layout for Garden Poolside", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/ZY06-SF03-MB_1.jpg?v=1776676922"}, {"sku": "ZY03-OLSF-GY", "title": "PURPLE LEAF Liviah 4-Piece Patio Conversation Set with Wicker Chairs and Cushions Sofa for Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/1_5168934b-60ef-4c32-ac76-e50b061676b2.jpg?v=1776763025"}, {"sku": "ZY03-OLSF-CP", "title": "PURPLE LEAF Liviah 4-Piece Patio Conversation Set with Wicker Chairs and Cushions Sofa for Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/1_149df42b-72be-4f75-8783-db49bd7b0aee.jpg?v=1741340402"}, {"sku": "ZY03-OLSF-TK", "title": "PURPLE LEAF Liviah 4-Piece Patio Conversation Set with Wicker Chairs and Cushions Sofa for Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/1_93906456-ccfb-4518-a095-cfd97fbe7ccf.jpg?v=1776763025"}, {"sku": "ZY05-BLKSF-ZJ-TK", "title": "PURPLE LEAF Breck Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-blksf-zj-tk.jpg?v=1780887337"}, {"sku": "ZY05-BLKSF-WFS-TK", "title": "PURPLE LEAF Breck Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-blksf-wfs-tk.jpg?v=1780887338"}, {"sku": "ZY05-BLKSF-JT-TK", "title": "PURPLE LEAF Breck Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-blksf-jt-tk.jpg?v=1780887335"}, {"sku": "ZY05-BLKSF-CJ-TK", "title": "PURPLE LEAF Breck Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-blksf-cj-tk.jpg?v=1780887334"}, {"sku": "ZY05-BLKSF-DDS-CF", "title": "PURPLE LEAF Breck Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-blksf-dds-cf.jpg?v=1780887338"}, {"sku": "ZY05-BLKSF-XDS-CF", "title": "PURPLE LEAF Breck Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-blksf-xds-cf.jpg?v=1780887337"}, {"sku": "ZY05-BLKSF-DDS-WT", "title": "PURPLE LEAF Breck Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-blksf-dds-wt.jpg?v=1780887337"}, {"sku": "ZY05-BLKSF-XDS-WT", "title": "PURPLE LEAF Breck Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy05-blksf-xds-wt.jpg?v=1780887337"}, {"sku": "ZY06-TSKNT-LRT1-W2", "title": "PURPLE LEAF Tuscany U-Shaped Patio Conversation Set with Removable Cushions and Pillows Bronze Aluminum Frame Outdoor Couch Sets for Porch Yard Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-tsknt-lrt1-w2_6bcb4da9-b190-4aa9-a918-da03068c1970.jpg?v=1776235976"}, {"sku": "ZY06-TSKNT-LT1W2-3", "title": "PURPLE LEAF Tuscany U-Shaped Patio Conversation Set with Removable Cushions and Pillows Bronze Aluminum Frame Outdoor Couch Sets for Porch Yard Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-tsknt-lt1w2-3.jpg?v=1776235976"}, {"sku": "ZY06-TSKNT-RT1W2-3", "title": "PURPLE LEAF Tuscany U-Shaped Patio Conversation Set with Removable Cushions and Pillows Bronze Aluminum Frame Outdoor Couch Sets for Porch Yard Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-tsknt-rt1w2-3.jpg?v=1776235976"}, {"sku": "ZY06-TSKNT-LRT1-W3-2", "title": "PURPLE LEAF Tuscany U-Shaped Patio Conversation Set with Removable Cushions and Pillows Bronze Aluminum Frame Outdoor Couch Sets for Porch Yard Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-tsknt-lrt1-w3-2.jpg?v=1776235976"}, {"sku": "ZY06-TSKNT-6-W2", "title": "PURPLE LEAF Tuscany U-Shaped Patio Conversation Set with Removable Cushions and Pillows Bronze Aluminum Frame Outdoor Couch Sets for Porch Yard Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-tsknt-6-w2.jpg?v=1776235976"}, {"sku": "ZY06-TSKNT-3-2", "title": "PURPLE LEAF Tuscany U-Shaped Patio Conversation Set with Removable Cushions and Pillows Bronze Aluminum Frame Outdoor Couch Sets for Porch Yard Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-tsknt-3-2_ecfe53cd-b6d6-4b2c-b0ff-5d0f3cd58f2a.jpg?v=1776235976"}, {"sku": "ZY06-TSKNT-R6LT2", "title": "PURPLE LEAF Tuscany U-Shaped Patio Conversation Set with Removable Cushions and Pillows Bronze Aluminum Frame Outdoor Couch Sets for Porch Yard Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-tsknt-r6lt2.jpg?v=1776235976"}, {"sku": "ZY06-TSKNT-L6RT2", "title": "PURPLE LEAF Tuscany U-Shaped Patio Conversation Set with Removable Cushions and Pillows Bronze Aluminum Frame Outdoor Couch Sets for Porch Yard Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-tsknt-l6rt2.jpg?v=1776235976"}, {"sku": "ZY06-TSKN-LT1R2", "title": "PURPLE LEAF Tuscany L-Shaped Patio Conversation Set with Removable Cushions and Pillows Bronze Aluminum Frame Outdoor Couch Sets for Porch Yard Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-tskn-lt1r2_55e272ac-c128-400b-baf5-ee87222a6020.jpg?v=1776235754"}, {"sku": "ZY06-TSKN-L2RT1", "title": "PURPLE LEAF Tuscany L-Shaped Patio Conversation Set with Removable Cushions and Pillows Bronze Aluminum Frame Outdoor Couch Sets for Porch Yard Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-tskn-l2rt1.jpg?v=1776235754"}, {"sku": "ZY06-TSKNT-LT1R2-W1", "title": "PURPLE LEAF Tuscany L-Shaped Patio Conversation Set with Removable Cushions and Pillows Bronze Aluminum Frame Outdoor Couch Sets for Porch Yard Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-tsknt-lt1r2-w1_1093ce63-0241-48c3-8af5-bdba49bb006b.jpg?v=1776235754"}, {"sku": "ZY06-TSKNT-RT1L2-W1", "title": "PURPLE LEAF Tuscany L-Shaped Patio Conversation Set with Removable Cushions and Pillows Bronze Aluminum Frame Outdoor Couch Sets for Porch Yard Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-tsknt-rt1l2-w1.jpg?v=1776235754"}, {"sku": "ZY06-TSKNT-L4R2", "title": "PURPLE LEAF Tuscany L-Shaped Patio Conversation Set with Removable Cushions and Pillows Bronze Aluminum Frame Outdoor Couch Sets for Porch Yard Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-tsknt-l4r2_5b646118-e7e3-4b48-93aa-424f97cc055e.jpg?v=1776235754"}, {"sku": "ZY06-TSKNT-L2R4", "title": "PURPLE LEAF Tuscany L-Shaped Patio Conversation Set with Removable Cushions and Pillows Bronze Aluminum Frame Outdoor Couch Sets for Porch Yard Garden", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy06-tsknt-l2r4.jpg?v=1776235754"}, {"sku": "ZY01-GLFSFSF-BK", "title": "PURPLE LEAF Griffin Black Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy01-glfsfsf-bk.jpg?v=1774064133"}, {"sku": "ZY01-GLFSFWF-BK", "title": "PURPLE LEAF Griffin Black Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy01-glfsfwf-bk.jpg?v=1774082526"}, {"sku": "ZY01-GLFSFZJ-BK", "title": "PURPLE LEAF Griffin Black Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy01-glfsfzj-bk.jpg?v=1774082526"}, {"sku": "ZY01-GLFSFCJ-BK", "title": "PURPLE LEAF Griffin Black Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy01-glfsfcj-bk.jpg?v=1774082526"}, {"sku": "ZY01-GLFSFJT-BK", "title": "PURPLE LEAF Griffin Black Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy01-glfsfjt-bk.jpg?v=1774082526"}, {"sku": "ZY01-GLFSFSF-WT", "title": "PURPLE LEAF Griffin White Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy01-glfsfsf-wt.jpg?v=1774064449"}, {"sku": "ZY01-GLFSFWF-WT", "title": "PURPLE LEAF Griffin White Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy01-glfsfwf-wt.jpg?v=1774064449"}, {"sku": "ZY01-GLFSFZJ-WT", "title": "PURPLE LEAF Griffin White Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy01-glfsfzj-wt.jpg?v=1774064450"}, {"sku": "ZY01-GLFSFCJ-WT", "title": "PURPLE LEAF Griffin White Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy01-glfsfcj-wt.jpg?v=1774434206"}, {"sku": "ZY01-GLFSFJT-WT", "title": "PURPLE LEAF Griffin White Patio Conversation Set Modular Sectional Sofa Components", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy01-glfsfjt-wt.jpg?v=1774064449"}, {"sku": "ZY01GLFSF22-4-W2Z2JC2-WT", "title": "PURPLE LEAF Griffin L-shaped Patio Conversation Set White with Cushion Pillows Ottoman and Premium Leather for Patio Balcony", "image": "https://cdn.shopify.com/s/files/1/0025/3172/1251/files/zy01glfsf22-4-w2z2jc2-wt.jpg?v=1774431682"}];
-
-// ============ State ============
-const state = {
-models: [],           // {id, name, sku, image, file, mesh, bbox, source:'upload'|'product'}
-selectedId: null,
-gridVisible: true,
-nextId: 1
+// ============ Data ============
+const MODULES = {
+  'left-arm':  { name:'左扶手模块', price:1170, icon:'🪑', w:1.0, d:1.0, h:0.85, arm:'left' },
+  'right-arm': { name:'右扶手模块', price:1170, icon:'🪑', w:1.0, d:1.0, h:0.85, arm:'right' },
+  'armless':   { name:'无扶手模块', price:950,  icon:'🛋', w:1.0, d:1.0, h:0.85, arm:'none' },
+  'corner':    { name:'转角模块',   price:1280, icon:'🔲', w:1.0, d:1.0, h:0.85, arm:'corner' },
+  'table':     { name:'茶几模块',   price:700,  icon:'☕', w:0.6, d:0.6, h:0.45, arm:'table' },
+  'ottoman':   { name:'脚踏模块',   price:650,  icon:'🧶', w:0.7, d:0.7, h:0.45, arm:'none' }
 };
 
-// ============ DOM ============
-const canvas = document.getElementById('three-canvas');
-const canvasContainer = document.getElementById('canvasContainer');
-const uploadZone = document.getElementById('uploadZone');
-const fileInput = document.getElementById('fileInput');
-const productList = document.getElementById('productList');
-const modelList = document.getElementById('modelList');
-const modelCount = document.getElementById('modelCount');
-const skuSearch = document.getElementById('skuSearch');
-const clearSceneBtn = document.getElementById('clearSceneBtn');
-const statusBar = document.getElementById('statusBar');
-const dropHint = document.getElementById('dropHint');
-const renameModal = document.getElementById('renameModal');
-const renameInput = document.getElementById('renameInput');
-let renameTargetId = null;
+const PRESETS = {
+  '3seater':      { name:'三人沙发', modules:['left-arm','armless','right-arm'] },
+  'lshape':       { name:'L型转角组合', modules:['left-arm','corner','armless','right-arm'] },
+  'ushape':       { name:'U型大组合', modules:['left-arm','armless','corner','armless','right-arm'] },
+  'lshape-table': { name:'带茶几L型', modules:['left-arm','corner','table','right-arm'] }
+};
 
-// ============ Three.js Setup ============
-const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+// ============ State ============
+let addedModules = [];
+let currentColor = '#e8ddd0';
+let sceneObjects = [];
+
+// ============ Scene Setup ============
+const container = document.getElementById('canvasContainer');
+const canvas = document.getElementById('three-canvas');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -241,473 +292,508 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.2;
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color('#1a1a2e');
-scene.fog = new THREE.Fog('#1a1a2e', 30, 80);
+const camera = new THREE.PerspectiveCamera(50, 2, 0.1, 50);
+camera.position.set(8, 5, 8);
 
-const camera = new THREE.PerspectiveCamera(50, 2, 0.1, 200);
-camera.position.set(12, 8, 12);
-camera.lookAt(0, 0, 0);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.set(0, 0.4, 0);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.minDistance = 3;
+controls.maxDistance = 18;
+controls.maxPolarAngle = Math.PI / 2.2;
+controls.update();
 
-// Lights
-const ambientLight = new THREE.AmbientLight('#b8c8ff', 1.2);
-scene.add(ambientLight);
+// Lighting
+const ambient = new THREE.AmbientLight('#ffffff', 0.6);
+scene.add(ambient);
+const sun = new THREE.DirectionalLight('#ffffff', 1.8);
+sun.position.set(8, 12, 4);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.camera.near = 0.5;
+sun.shadow.camera.far = 50;
+sun.shadow.camera.left = -10;
+sun.shadow.camera.right = 10;
+sun.shadow.camera.top = 10;
+sun.shadow.camera.bottom = -2;
+sun.shadow.bias = -0.0001;
+scene.add(sun);
 
-const hemiLight = new THREE.HemisphereLight('#d0e0ff', '#3a3040', 0.8);
-scene.add(hemiLight);
-
-const sunLight = new THREE.DirectionalLight('#ffffff', 4.5);
-sunLight.position.set(15, 25, 10);
-sunLight.castShadow = true;
-sunLight.shadow.mapSize.width = 2048;
-sunLight.shadow.mapSize.height = 2048;
-sunLight.shadow.camera.near = 0.5;
-sunLight.shadow.camera.far = 100;
-sunLight.shadow.camera.left = -25;
-sunLight.shadow.camera.right = 25;
-sunLight.shadow.camera.top = 25;
-sunLight.shadow.camera.bottom = -25;
-sunLight.shadow.bias = -0.0001;
-scene.add(sunLight);
+const fill = new THREE.DirectionalLight('#b3cde0', 0.4);
+fill.position.set(-4, 2, -3);
+scene.add(fill);
 
 // Floor
-const floorGeom = new THREE.PlaneGeometry(40, 40);
-const floorMat = new THREE.MeshStandardMaterial({color:'#4a4035', roughness:0.55, metalness:0.05});
-const floor = new THREE.Mesh(floorGeom, floorMat);
+const floorGeo = new THREE.PlaneGeometry(20, 20);
+const floorMat = new THREE.MeshStandardMaterial({ color:'#1a1a2e', roughness:0.8 });
+const floor = new THREE.Mesh(floorGeo, floorMat);
 floor.rotation.x = -Math.PI / 2;
 floor.receiveShadow = true;
-floor.name = 'floor';
 scene.add(floor);
 
 // Grid
-const gridHelper = new THREE.PolarGridHelper(20, 64, 48, 256, '#888888', '#555555');
-gridHelper.position.y = 0.005;
-gridHelper.name = 'grid';
-scene.add(gridHelper);
+const grid = new THREE.GridHelper(12, 24, '#334155', '#1e293b');
+grid.position.y = 0.002;
+scene.add(grid);
 
-// Center cross
-const crossMat = new THREE.MeshBasicMaterial({color:'#6c63ff', transparent:true, opacity:0.3, depthTest:false});
-const crossH = new THREE.Mesh(new THREE.PlaneGeometry(0.8, 0.08), crossMat);
-crossH.rotation.x = -Math.PI/2; crossH.position.y = 0.008; scene.add(crossH);
-const crossV = new THREE.Mesh(new THREE.PlaneGeometry(0.08, 0.8), crossMat);
-crossV.rotation.x = -Math.PI/2; crossV.position.y = 0.008; scene.add(crossV);
+// ============ Module 3D Builder ============
+function getModuleColor() { return new THREE.Color(currentColor); }
+function getFrameColor() { return new THREE.Color('#6B5B4F'); }
+function getLegColor() { return new THREE.Color('#3d3025'); }
+function cushionMat(baseColor) { return new THREE.MeshStandardMaterial({ color:baseColor, roughness:0.75 }); }
+function frameMat() { return new THREE.MeshStandardMaterial({ color:getFrameColor(), roughness:0.5, metalness:0.05 }); }
+function legMat() { return new THREE.MeshStandardMaterial({ color:getLegColor(), roughness:0.4 }); }
 
-// Controls
-const orbitControls = new OrbitControls(camera, renderer.domElement);
-orbitControls.enableDamping = true;
-orbitControls.dampingFactor = 0.08;
-orbitControls.target.set(0, 0.5, 0);
-orbitControls.minDistance = 3;
-orbitControls.maxDistance = 40;
-orbitControls.maxPolarAngle = Math.PI / 2.1;
-orbitControls.mouseButtons = {LEFT:null, MIDDLE:THREE.MOUSE.PAN, RIGHT:THREE.MOUSE.ROTATE};
-orbitControls.touches = {ONE:THREE.TOUCH.ROTATE, TWO:THREE.TOUCH.DOLLY_PAN};
-orbitControls.update();
-
-// Drag Controls
-const dragControls = new DragControls([], camera, renderer.domElement);
-dragControls.enabled = true;
-
-// ============ Selection Highlight ============
-const highlightMat = new THREE.MeshBasicMaterial({color:'#6c63ff', side:THREE.BackSide, transparent:true, opacity:0.15});
-const outlineMat = new THREE.MeshBasicMaterial({color:'#6c63ff', side:THREE.FrontSide, wireframe:true, transparent:true, opacity:0.6});
-let highlightGroup = null;
-
-function clearHighlight() {
-if (highlightGroup) {scene.remove(highlightGroup);highlightGroup=null;}
-state.selectedId = null;
-document.querySelectorAll('.model-item').forEach(el=>el.classList.remove('selected'));
+function createRoundedBox(w, h, d, radius, material) {
+  // Use beveled box for smoother look
+  const geo = new THREE.BoxGeometry(w, h, d, 2, 2, 2);
+  // Slightly round by modifying vertices (simple approach: use RoundedBoxGeometry style)
+  const positions = geo.attributes.position;
+  for (let i = 0; i < positions.count; i++) {
+    const x = positions.getX(i);
+    const y = positions.getY(i);
+    const z = positions.getZ(i);
+    const hw = w / 2, hh = h / 2, hd = d / 2;
+    const dx = Math.max(0, Math.abs(x) - hw + radius);
+    const dy = Math.max(0, Math.abs(y) - hh + radius);
+    const dz = Math.max(0, Math.abs(z) - hd + radius);
+    const dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
+    if (dist > 0 && dist < radius) {
+      const factor = (radius - dist) / radius * 0.3;
+      positions.setX(i, x - Math.sign(x) * dx * factor);
+      positions.setY(i, y - Math.sign(y) * dy * factor);
+      positions.setZ(i, z - Math.sign(z) * dz * factor);
+    }
+  }
+  geo.computeVertexNormals();
+  return new THREE.Mesh(geo, material);
 }
 
-function highlightModel(modelId) {
-clearHighlight();
-const model = state.models.find(m=>m.id===modelId);
-if (!model||!model.mesh) return;
-state.selectedId = modelId;
-const box = new THREE.Box3().setFromObject(model.mesh);
-const size = box.getSize(new THREE.Vector3());
-const center = box.getCenter(new THREE.Vector3());
-highlightGroup = new THREE.Group();
-const hlGeom = new THREE.BoxGeometry(size.x+0.15, size.y+0.1, size.z+0.15);
-const hlMesh = new THREE.Mesh(hlGeom, highlightMat);
-hlMesh.position.copy(center);
-highlightGroup.add(hlMesh);
-const olMesh = new THREE.Mesh(hlGeom, outlineMat);
-olMesh.position.copy(center);
-highlightGroup.add(olMesh);
-scene.add(highlightGroup);
-// Update list
-document.querySelectorAll('.model-item').forEach(el=>{
-if (parseInt(el.dataset.id)===modelId) el.classList.add('selected');
-});
+function createModule3D(type) {
+  const group = new THREE.Group();
+  const cfg = MODULES[type];
+  const w = cfg.w;
+  const d = cfg.d;
+  const h = cfg.h;
+  const fc = getModuleColor();
+  const fcLight = fc.clone().multiplyScalar(1.08);
+
+  if (type === 'table') {
+    // Table top with chamfered edge
+    const topGeo = new THREE.CylinderGeometry(w/2 - 0.02, w/2, 0.06, 32);
+    const top = new THREE.Mesh(topGeo, frameMat());
+    top.position.y = h - 0.03;
+    top.castShadow = true; top.receiveShadow = true;
+    group.add(top);
+
+    // Cross legs
+    const legGeo = new THREE.CylinderGeometry(0.04, 0.05, h - 0.06, 8);
+    for (let angle = 0; angle < Math.PI * 2; angle += Math.PI / 2) {
+      const leg = new THREE.Mesh(legGeo, legMat());
+      leg.position.set(Math.cos(angle) * (w/2 - 0.12), (h - 0.06) / 2, Math.sin(angle) * (w/2 - 0.12));
+      leg.castShadow = true;
+      group.add(leg);
+    }
+    return group;
+  }
+
+  if (type === 'ottoman') {
+    // Thick cushion
+    const cGeo = new THREE.BoxGeometry(w - 0.04, 0.22, d - 0.04, 4, 4, 4);
+    const cushion = new THREE.Mesh(cGeo, cushionMat(fcLight));
+    cushion.position.y = h - 0.11;
+    cushion.castShadow = true; cushion.receiveShadow = true;
+    group.add(cushion);
+
+    // Base
+    const bGeo = new THREE.BoxGeometry(w - 0.02, h - 0.24, d - 0.02);
+    const base = new THREE.Mesh(bGeo, frameMat());
+    base.position.y = (h - 0.24) / 2;
+    base.castShadow = true; base.receiveShadow = true;
+    group.add(base);
+
+    // Legs
+    for (let lx = -1; lx <= 1; lx += 2) {
+      for (let lz = -1; lz <= 1; lz += 2) {
+        const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.05, 0.12, 8), legMat());
+        leg.position.set(lx * (w/2 - 0.1), 0.06, lz * (d/2 - 0.1));
+        leg.castShadow = true;
+        group.add(leg);
+      }
+    }
+    return group;
+  }
+
+  // === STANDARD SOFA MODULE ===
+  const hasLeftArm = (cfg.arm === 'left');
+  const hasRightArm = (cfg.arm === 'right');
+  const isCorner = (cfg.arm === 'corner');
+
+  // Base platform - extends to exact edges
+  const baseH = 0.14;
+  const baseGeo = new THREE.BoxGeometry(w, baseH, d);
+  const base = new THREE.Mesh(baseGeo, frameMat());
+  base.position.y = baseH / 2;
+  base.castShadow = true; base.receiveShadow = true;
+  group.add(base);
+
+  // Seat cushion - split into sections for realism
+  const seatH = 0.14;
+  const seatY = baseH + seatH / 2 + 0.01;
+  const seatInset = 0.03;
+
+  if (isCorner) {
+    // Corner seat is square
+    const seatGeo = new THREE.BoxGeometry(w - seatInset*2, seatH, d - seatInset*2, 4, 2, 4);
+    const seat = new THREE.Mesh(seatGeo, cushionMat(fcLight));
+    seat.position.y = seatY;
+    seat.castShadow = true; seat.receiveShadow = true;
+    group.add(seat);
+  } else {
+    // Split seat into two cushions
+    const halfW = (w - seatInset*2) / 2 - 0.02;
+    for (let s = 0; s < 2; s++) {
+      const sx = (s - 0.5) * (halfW + 0.02);
+      const seatGeo = new THREE.BoxGeometry(halfW, seatH, d - seatInset*2, 3, 2, 3);
+      const seat = new THREE.Mesh(seatGeo, cushionMat(fcLight));
+      seat.position.set(sx, seatY, 0);
+      seat.castShadow = true; seat.receiveShadow = true;
+      group.add(seat);
+    }
+  }
+
+  // Back rest
+  const backH = 0.38;
+  const backD = 0.14;
+  const backY = baseH + seatH + backH / 2;
+  const backZ = -d/2 + backD/2 + 0.02;
+
+  if (isCorner) {
+    // Corner has back on two sides
+    const backGeo = new THREE.BoxGeometry(w - seatInset*2, backH, backD, 4, 2, 1);
+    const back1 = new THREE.Mesh(backGeo, cushionMat(fc));
+    back1.position.set(0, backY, backZ);
+    back1.castShadow = true;
+    group.add(back1);
+
+    const back2Geo = new THREE.BoxGeometry(backD, backH, d - seatInset*2, 1, 2, 4);
+    const back2 = new THREE.Mesh(back2Geo, cushionMat(fc));
+    back2.position.set(w/2 - backD/2 - 0.02, backY, 0);
+    back2.castShadow = true;
+    group.add(back2);
+  } else {
+    const backGeo = new THREE.BoxGeometry(w - seatInset*2, backH, backD, 4, 2, 1);
+    const back = new THREE.Mesh(backGeo, cushionMat(fc));
+    back.position.set(0, backY, backZ);
+    back.castShadow = true; back.receiveShadow = true;
+    group.add(back);
+  }
+
+  // Arms
+  const armW = 0.1;
+  const armD = d - 0.04;
+  const armH = 0.3;
+  const armY = baseH + armH / 2;
+
+  if (hasLeftArm) {
+    const armGeo = new THREE.BoxGeometry(armW, armH, armD, 2, 2, 2);
+    const arm = new THREE.Mesh(armGeo, frameMat());
+    arm.position.set(-w/2 + armW/2, armY, 0);
+    arm.castShadow = true; arm.receiveShadow = true;
+    group.add(arm);
+
+    // Arm cushion
+    const padGeo = new THREE.BoxGeometry(armW + 0.02, 0.06, armD - 0.08, 2, 1, 2);
+    const pad = new THREE.Mesh(padGeo, cushionMat(fcLight));
+    pad.position.set(-w/2 + armW/2, baseH + armH + 0.03, 0);
+    pad.castShadow = true;
+    group.add(pad);
+  }
+
+  if (hasRightArm) {
+    const armGeo = new THREE.BoxGeometry(armW, armH, armD, 2, 2, 2);
+    const arm = new THREE.Mesh(armGeo, frameMat());
+    arm.position.set(w/2 - armW/2, armY, 0);
+    arm.castShadow = true; arm.receiveShadow = true;
+    group.add(arm);
+
+    const padGeo = new THREE.BoxGeometry(armW + 0.02, 0.06, armD - 0.08, 2, 1, 2);
+    const pad = new THREE.Mesh(padGeo, cushionMat(fcLight));
+    pad.position.set(w/2 - armW/2, baseH + armH + 0.03, 0);
+    pad.castShadow = true;
+    group.add(pad);
+  }
+
+  // Legs - 4 per module
+  const legH = 0.11;
+  const legR = 0.045;
+  for (let lx = -1; lx <= 1; lx += 2) {
+    for (let lz = -1; lz <= 1; lz += 2) {
+      const legGeo = new THREE.CylinderGeometry(legR * 0.7, legR, legH, 8);
+      const leg = new THREE.Mesh(legGeo, legMat());
+      leg.position.set(lx * (w/2 - 0.1), legH / 2, lz * (d/2 - 0.1));
+      leg.castShadow = true;
+      group.add(leg);
+    }
+  }
+
+  return group;
 }
 
-// ============ Raycaster for click select ============
-const raycaster = new THREE.Raycaster();
-const mouse = new THREE.Vector2();
-let isDragging = false;
-
-dragControls.addEventListener('dragstart', ()=>{isDragging=true;});
-dragControls.addEventListener('dragend', ()=>{setTimeout(()=>isDragging=false, 50);});
-
-canvas.addEventListener('click', (e)=>{
-if (isDragging) return;
-const rect = canvas.getBoundingClientRect();
-mouse.x = ((e.clientX-rect.left)/rect.width)*2-1;
-mouse.y = -((e.clientY-rect.top)/rect.height)*2+1;
-raycaster.setFromCamera(mouse, camera);
-const meshes = state.models.filter(m=>m.mesh).map(m=>m.mesh);
-const intersects = raycaster.intersectObjects(meshes, true);
-if (intersects.length>0) {
-let obj = intersects[0].object;
-while (obj) {
-const model = state.models.find(m=>m.mesh===obj);
-if (model) {highlightModel(model.id);return;}
-obj = obj.parent;
-}
-}
-clearHighlight();
-});
-
-// Double click to rotate 90
-canvas.addEventListener('dblclick', (e)=>{
-const rect = canvas.getBoundingClientRect();
-mouse.x = ((e.clientX-rect.left)/rect.width)*2-1;
-mouse.y = -((e.clientY-rect.top)/rect.height)*2+1;
-raycaster.setFromCamera(mouse, camera);
-const meshes = state.models.filter(m=>m.mesh).map(m=>m.mesh);
-const intersects = raycaster.intersectObjects(meshes, true);
-if (intersects.length>0) {
-let obj = intersects[0].object;
-while (obj) {
-const model = state.models.find(m=>m.mesh===obj);
-if (model) {
-model.mesh.rotation.y += Math.PI/2;
-clearHighlight();
-highlightModel(model.id);
-return;
-}
-obj = obj.parent;
-}
-}
-});
-
-// Delete key
-window.addEventListener('keydown', (e)=>{
-if (e.key==='Delete'&&state.selectedId!==null) {
-removeModel(state.selectedId);
-}
-});
-
-// ============ DragControls: constrain Y axis ============
-dragControls.addEventListener('drag', (event)=>{
-const obj = event.object;
-// Keep Y at floor level
-if (obj.userData && obj.userData.groundY !== undefined) {
-obj.position.y = obj.userData.groundY;
-}
-});
-
-// ============ GLTF Loader ============
-const loader = new GLTFLoader();
-
-function loadGLB(file, modelData) {
-const url = URL.createObjectURL(file);
-loader.load(url, (gltf)=>{
-URL.revokeObjectURL(url);
-const mesh = gltf.scene;
-// Auto-scale
-const box = new THREE.Box3().setFromObject(mesh);
-const size = box.getSize(new THREE.Vector3());
-const maxDim = Math.max(size.x, size.y, size.z);
-const targetSize = 2.0;
-if (maxDim>0) {
-const scale = targetSize/maxDim;
-mesh.scale.setScalar(scale);
-}
-// Center on ground
-box.setFromObject(mesh);
-const center = box.getCenter(new THREE.Vector3());
-const minY = box.min.y;
-mesh.position.set(-center.x, -minY, -center.z);
-mesh.traverse((child)=>{
-if (child.isMesh) {
-child.castShadow = true;
-child.receiveShadow = true;
-if (child.material && !child.material.emissive) {
-child.material.roughness = Math.min(child.material.roughness||1, 0.8);
-child.material.metalness = child.material.metalness||0.05;
-}
-}
-});
-mesh.userData.groundY = -minY;
-scene.add(mesh);
-modelData.mesh = mesh;
-modelData.bbox = box;
-// Update drag controls
-updateDragObjects();
-updateModelList();
-statusBar.textContent = `已加载: ${modelData.name}`;
-}, (progress)=>{
-const pct = progress.total>0?Math.round(progress.loaded/progress.total*100):0;
-statusBar.textContent = `加载中... ${pct}%`;
-}, (err)=>{
-console.error('GLB load error:', err);
-statusBar.textContent = '模型加载失败';
-alert('模型加载失败，请确认文件格式为 .glb');
-removeModelSilent(modelData.id);
-});
-}
-
-function updateDragObjects() {
-const meshes = state.models.filter(m=>m.mesh).map(m=>m.mesh);
-dragControls.dispose();
-dragControls.object = meshes;
-dragControls.activate();
-// Find floor for DragControls
-dragControls._objects = meshes;
-}
-
-// ============ Model Management ============
-function addModel(name, source, image, file, sku) {
-const id = state.nextId++;
-const modelData = {id, name, source, image, sku:sku||'', file, mesh:null, bbox:null};
-state.models.push(modelData);
-if (file) {
-loadGLB(file, modelData);
-}
-updateModelList();
-}
-
-function removeModel(id) {
-const idx = state.models.findIndex(m=>m.id===id);
-if (idx===-1) return;
-const model = state.models[idx];
-if (model.mesh) {
-scene.remove(model.mesh);
-// Dispose
-model.mesh.traverse((child)=>{
-if (child.geometry) child.geometry.dispose();
-if (child.material) {
-if (Array.isArray(child.material)) child.material.forEach(m=>m.dispose());
-else child.material.dispose();
-}
-});
-}
-if (state.selectedId===id) clearHighlight();
-state.models.splice(idx,1);
-updateDragObjects();
-updateModelList();
-}
-
-function removeModelSilent(id) {
-const idx = state.models.findIndex(m=>m.id===id);
-if (idx===-1) return;
-state.models.splice(idx,1);
-updateDragObjects();
-updateModelList();
-}
-
+// ============ Scene Management ============
 function clearScene() {
-if (state.models.length===0) return;
-if (!confirm(`确定要清空场景中所有 ${state.models.length} 个模型吗？`)) return;
-[...state.models].forEach(m=>removeModel(m.id));
+  sceneObjects.forEach(obj => scene.remove(obj));
+  sceneObjects = [];
 }
 
-function updateModelList() {
-modelCount.textContent = state.models.length;
-if (state.models.length===0) {
-modelList.innerHTML = '<div class="no-results">尚未添加模型<br>上传 GLB 或从产品列表添加</div>';
-} else {
-modelList.innerHTML = state.models.map(m=>`
-<div class="model-item${state.selectedId===m.id?' selected':''}" data-id="${m.id}" onclick="window._selectModel(${m.id})">
-<div class="model-thumb">${m.image?`<img src="${m.image}" onerror="this.style.display='none';this.parentElement.innerHTML='&#128230;'">`:'&#128230;'}</div>
-<div class="model-info">
-<div class="model-name">${m.name}</div>
-<div class="model-source">${m.source==='upload'?'用户上传':(m.sku?'SKU: '+m.sku:'产品')}</div>
-</div>
-<div class="model-actions">
-<button title="重命名" onclick="event.stopPropagation();window._renameModel(${m.id})">&#9998;</button>
-<button title="删除" onclick="event.stopPropagation();window._removeModel(${m.id})">&#10005;</button>
-</div>
-</div>
-`).join('');
-}
-}
+function rebuildScene() {
+  clearScene();
+  if (addedModules.length === 0) return;
 
-// Global functions for onclick
-window._selectModel = (id)=>highlightModel(id);
-window._removeModel = (id)=>removeModel(id);
-window._renameModel = (id)=>{
-renameTargetId = id;
-const model = state.models.find(m=>m.id===id);
-if (model) renameInput.value = model.name;
-renameModal.classList.add('show');
-renameInput.focus();
-renameInput.select();
-};
+  // First pass: calculate layout positions
+  const layout = [];
+  let cx = 0, cz = 0;
+  let direction = 'x'; // 'x' means extending along x-axis
 
-// ============ Product List ============
-let filteredProducts = PRODUCTS;
+  addedModules.forEach((type, index) => {
+    const cfg = MODULES[type];
+    const item = { type, index, pos: { x: 0, z: 0 }, rotY: 0 };
 
-function renderProductList(products) {
-if (products.length===0) {
-productList.innerHTML = '<div class="no-results">无匹配产品</div>';
-return;
-}
-const show = products.slice(0, 50);
-productList.innerHTML = show.map(p=>`
-<div class="product-item" onclick="window._addProduct('${p.sku}')">
-<img src="${p.image}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2244%22 height=%2244%22><rect fill=%22%230d0d20%22 width=%2244%22 height=%2244%22/><text x=%2222%22 y=%2227%22 text-anchor=%22middle%22 fill=%22%236b6b8a%22 font-size=%2216%22>?</text></svg>'">
-<div class="prod-info">
-<div class="prod-name" title="${p.title}">${p.title}</div>
-<div class="prod-sku">${p.sku}</div>
-</div>
-<button class="add-btn" title="添加到场景" onclick="event.stopPropagation();window._addProduct('${p.sku}')">+</button>
-</div>
-`).join('');
-if (products.length>50) {
-productList.innerHTML += `<div class="no-results">显示前50条，共${products.length}条匹配结果</div>`;
-}
-}
+    if (type === 'corner') {
+      item.pos.x = cx;
+      item.pos.z = cz;
+      item.rotY = -Math.PI / 2;
+      cx = cx + cfg.w / 2 + cfg.d / 2;
+      cz = cz - cfg.d / 2;
+      direction = 'z';
+    } else if (direction === 'z') {
+      item.pos.x = cx;
+      item.pos.z = cz;
+      cz -= cfg.w;
+    } else {
+      item.pos.x = cx;
+      item.pos.z = cz;
+      cx += cfg.w;
+    }
 
-window._addProduct = (sku)=>{
-const p = PRODUCTS.find(x=>x.sku===sku);
-if (!p) return;
-addModel(p.title, 'product', p.image, null, p.sku);
-};
+    layout.push(item);
+  });
 
-skuSearch.addEventListener('input', ()=>{
-const q = skuSearch.value.toLowerCase().trim();
-if (!q) {filteredProducts=PRODUCTS;}
-else {filteredProducts=PRODUCTS.filter(p=>p.sku.toLowerCase().includes(q)||p.title.toLowerCase().includes(q));}
-renderProductList(filteredProducts);
-});
+  // Calculate bounds and center
+  let minX = Infinity, maxX = -Infinity;
+  let minZ = Infinity, maxZ = -Infinity;
+  layout.forEach(item => {
+    const cfg = MODULES[item.type];
+    const hw = cfg.w / 2, hd = cfg.d / 2;
+    minX = Math.min(minX, item.pos.x - hw);
+    maxX = Math.max(maxX, item.pos.x + hw);
+    minZ = Math.min(minZ, item.pos.z - hd);
+    maxZ = Math.max(maxZ, item.pos.z + hd);
+  });
+  const offsetX = -(minX + maxX) / 2;
+  const offsetZ = -(minZ + maxZ) / 2;
 
-// ============ Upload ============
-uploadZone.addEventListener('click', ()=>fileInput.click());
-fileInput.addEventListener('change', handleFiles);
+  // Second pass: create and place
+  layout.forEach(item => {
+    const group = createModule3D(item.type);
+    group.position.set(item.pos.x + offsetX, 0, item.pos.z + offsetZ);
+    group.rotation.y = item.rotY;
+    group.userData = { type: item.type, index: item.index };
+    scene.add(group);
+    sceneObjects.push(group);
+  });
 
-uploadZone.addEventListener('dragover', (e)=>{e.preventDefault();uploadZone.classList.add('drag-over');});
-uploadZone.addEventListener('dragleave', ()=>uploadZone.classList.remove('drag-over'));
-uploadZone.addEventListener('drop', (e)=>{
-e.preventDefault();
-uploadZone.classList.remove('drag-over');
-handleFiles({target:{files:e.dataTransfer.files}});
-});
-
-// Canvas drop zone
-canvasContainer.addEventListener('dragover', (e)=>{e.preventDefault();dropHint.classList.add('show');});
-canvasContainer.addEventListener('dragleave', (e)=>{
-if (!canvasContainer.contains(e.relatedTarget)) dropHint.classList.remove('show');
-});
-canvasContainer.addEventListener('drop', (e)=>{
-e.preventDefault();
-dropHint.classList.remove('show');
-handleFiles({target:{files:e.dataTransfer.files}});
-});
-
-function handleFiles(e) {
-const files = Array.from(e.target.files||[]);
-files.forEach(file=>{
-if (!file.name.toLowerCase().endsWith('.glb')) {
-alert(`文件 "${file.name}" 不是 .glb 格式`);
-return;
-}
-const name = file.name.replace(/\.glb$/i,'');
-addModel(name, 'upload', null, file, null);
-});
-fileInput.value = '';
+  // Update camera target to center
+  controls.target.set(0, 0.4, 0);
+  controls.update();
 }
 
-// ============ Clear Scene ============
-clearSceneBtn.addEventListener('click', clearScene);
+// ============ UI Updates ============
+function updateUI() {
+  document.getElementById('addedCount').textContent = addedModules.length;
 
-// ============ Rename Modal ============
-document.getElementById('renameCancel').addEventListener('click', ()=>{
-renameModal.classList.remove('show');
-renameTargetId = null;
-});
-document.getElementById('renameConfirm').addEventListener('click', ()=>{
-if (renameTargetId===null) return;
-const model = state.models.find(m=>m.id===renameTargetId);
-if (model) {
-model.name = renameInput.value.trim()||model.name;
-updateModelList();
+  const addedList = document.getElementById('addedList');
+  const total = addedModules.reduce((sum, type) => sum + MODULES[type].price, 0);
+
+  if (addedModules.length === 0) {
+    addedList.innerHTML = '<div style="text-align:center;padding:16px;color:#475569;font-size:12px">点击上方模块或加载预配置方案开始拼装</div>';
+  } else {
+    addedList.innerHTML = addedModules.map((type, i) => {
+      const m = MODULES[type];
+      return `<div class="added-item">
+        <span class="item-icon">${m.icon}</span>
+        <span class="item-name">${m.name}</span>
+        <span class="item-price">$${m.price.toLocaleString()}</span>
+        <button class="item-del" data-action="remove" data-index="${i}">×</button>
+      </div>`;
+    }).join('');
+  }
+
+  document.getElementById('totalPrice').textContent = '$' + total.toLocaleString();
+
+  // Tags
+  const tags = document.getElementById('moduleTags');
+  tags.innerHTML = addedModules.map((type, i) => {
+    const m = MODULES[type];
+    return `<span class="module-tag">${m.icon} ${m.name}<span class="tag-del" data-action="remove" data-index="${i}">×</span></span>`;
+  }).join('');
 }
-renameModal.classList.remove('show');
-renameTargetId = null;
-});
-renameInput.addEventListener('keydown', (e)=>{
-if (e.key==='Enter') document.getElementById('renameConfirm').click();
-if (e.key==='Escape') document.getElementById('renameCancel').click();
+
+function addModule(type) {
+  addedModules.push(type);
+  updateUI();
+  rebuildScene();
+}
+
+function removeModule(index) {
+  addedModules.splice(index, 1);
+  updateUI();
+  rebuildScene();
+}
+
+function loadPreset(name) {
+  const preset = PRESETS[name];
+  if (!preset) return;
+  addedModules = [...preset.modules];
+  updateUI();
+  rebuildScene();
+}
+
+// ============ Event Handlers ============
+document.getElementById('moduleGrid').addEventListener('click', (e) => {
+  const addBtn = e.target.closest('[data-action="add"]');
+  if (addBtn) {
+    addModule(addBtn.dataset.module);
+    return;
+  }
 });
 
-// ============ Toolbar ============
-document.getElementById('btnReset').addEventListener('click', ()=>{
-camera.position.set(12, 8, 12);
-orbitControls.target.set(0, 0.5, 0);
-orbitControls.update();
+document.getElementById('addedList').addEventListener('click', (e) => {
+  const delBtn = e.target.closest('[data-action="remove"]');
+  if (delBtn) {
+    removeModule(parseInt(delBtn.dataset.index));
+  }
 });
 
-document.getElementById('btnTop').addEventListener('click', ()=>{
-camera.position.set(0, 12, 0.1);
-orbitControls.target.set(0, 0, 0);
-orbitControls.update();
+document.getElementById('moduleTags').addEventListener('click', (e) => {
+  const delBtn = e.target.closest('[data-action="remove"]');
+  if (delBtn) {
+    removeModule(parseInt(delBtn.dataset.index));
+  }
 });
 
-document.getElementById('btnFront').addEventListener('click', ()=>{
-camera.position.set(0, 2, 12);
-orbitControls.target.set(0, 1, 0);
-orbitControls.update();
+document.querySelectorAll('.preset-load').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const presetName = btn.dataset.preset;
+    const preset = PRESETS[presetName];
+    if (addedModules.length > 0) {
+      document.getElementById('confirmTitle').textContent = '加载预配置方案';
+      document.getElementById('confirmBody').textContent = `将替换当前所有模块，加载"${preset.name}"（${preset.modules.length} 个模块）。是否继续？`;
+      document.getElementById('confirmModal').classList.add('show');
+      document.getElementById('confirmOk').onclick = () => {
+        loadPreset(presetName);
+        document.getElementById('confirmModal').classList.remove('show');
+      };
+    } else {
+      loadPreset(presetName);
+    }
+  });
 });
 
-document.getElementById('btnSide').addEventListener('click', ()=>{
-camera.position.set(12, 2, 0);
-orbitControls.target.set(0, 1, 0);
-orbitControls.update();
+document.getElementById('confirmCancel').addEventListener('click', () => {
+  document.getElementById('confirmModal').classList.remove('show');
 });
 
-document.getElementById('btnGrid').addEventListener('click', function() {
-state.gridVisible = !state.gridVisible;
-gridHelper.visible = state.gridVisible;
-this.classList.toggle('active', state.gridVisible);
+document.getElementById('btnReset').addEventListener('click', () => {
+  if (addedModules.length === 0) return;
+  document.getElementById('confirmTitle').textContent = '清空配置';
+  document.getElementById('confirmBody').textContent = '将移除所有已添加的模块，此操作不可撤销。是否继续？';
+  document.getElementById('confirmModal').classList.add('show');
+  document.getElementById('confirmOk').onclick = () => {
+    addedModules = [];
+    updateUI();
+    rebuildScene();
+    document.getElementById('confirmModal').classList.remove('show');
+  };
 });
 
-document.getElementById('btnScreenshot').addEventListener('click', ()=>{
-renderer.render(scene, camera);
-const dataURL = renderer.domElement.toDataURL('image/png');
-const link = document.createElement('a');
-const dt = new Date();
-const ts = `${dt.getFullYear()}${String(dt.getMonth()+1).padStart(2,'0')}${String(dt.getDate()).padStart(2,'0')}_${String(dt.getHours()).padStart(2,'0')}${String(dt.getMinutes()).padStart(2,'0')}${String(dt.getSeconds()).padStart(2,'0')}`;
-link.download = `product_studio_${ts}.png`;
-link.href = dataURL;
-link.click();
-statusBar.textContent = '截图已保存';
-setTimeout(()=>statusBar.textContent='右键旋转 | 滚轮缩放 | 中键平移 | 左键拖拽模型', 2000);
+document.getElementById('btnCheckout').addEventListener('click', () => {
+  if (addedModules.length === 0) {
+    alert('请先添加模块');
+    return;
+  }
+  const total = addedModules.reduce((sum, type) => sum + MODULES[type].price, 0);
+  const items = addedModules.map(t => MODULES[t].name + ' - $' + MODULES[t].price.toLocaleString()).join('\n');
+  document.getElementById('confirmTitle').textContent = '配置清单';
+  document.getElementById('confirmBody').textContent = `模块明细:\n${items}\n\n预估总价: $${total.toLocaleString()}\n\n如需下单请联系客服。`;
+  document.getElementById('confirmModal').classList.add('show');
+  document.getElementById('confirmOk').textContent = '关闭';
+  document.getElementById('confirmOk').onclick = () => {
+    document.getElementById('confirmModal').classList.remove('show');
+    document.getElementById('confirmOk').textContent = '确认';
+  };
 });
 
-// ============ Resize ============
+// Color swatches
+document.getElementById('colorRow').addEventListener('click', (e) => {
+  const swatch = e.target.closest('.color-swatch');
+  if (!swatch) return;
+  document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+  swatch.classList.add('active');
+  currentColor = swatch.dataset.color;
+  rebuildScene();
+});
+
+// Toolbar
+document.getElementById('btnTop').addEventListener('click', () => {
+  camera.position.set(0, 8, 0.1);
+  controls.target.set(0, 0.4, 0);
+  controls.update();
+});
+document.getElementById('btnFront').addEventListener('click', () => {
+  camera.position.set(0, 1.5, 7);
+  controls.target.set(0, 0.4, 0);
+  controls.update();
+});
+document.getElementById('btnSide').addEventListener('click', () => {
+  camera.position.set(7, 1.5, 0);
+  controls.target.set(0, 0.4, 0);
+  controls.update();
+});
+document.getElementById('btnResetView').addEventListener('click', () => {
+  camera.position.set(8, 5, 8);
+  controls.target.set(0, 0.4, 0);
+  controls.update();
+});
+document.getElementById('btnScreenshot').addEventListener('click', () => {
+  renderer.render(scene, camera);
+  const dataURL = renderer.domElement.toDataURL('image/png');
+  const link = document.createElement('a');
+  link.download = 'purple-leaf-config-' + Date.now() + '.png';
+  link.href = dataURL;
+  link.click();
+});
+
+// ============ Render Loop ============
 function resize() {
-const w = canvasContainer.clientWidth;
-const h = canvasContainer.clientHeight;
-renderer.setSize(w, h, false);
-camera.aspect = w/Math.max(h,1);
-camera.updateProjectionMatrix();
+  const rect = container.getBoundingClientRect();
+  renderer.setSize(rect.width, rect.height);
+  camera.aspect = rect.width / Math.max(rect.height, 1);
+  camera.updateProjectionMatrix();
 }
+
 window.addEventListener('resize', resize);
 resize();
 
-// ============ Render Loop ============
 function animate() {
-requestAnimationFrame(animate);
-orbitControls.update();
-renderer.render(scene, camera);
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene, camera);
 }
 animate();
 
-// ============ Init ============
-renderProductList(PRODUCTS);
-statusBar.textContent = '右键旋转 | 滚轮缩放 | 中键平移 | 左键拖拽模型';
+console.log('Purple Leaf 模块化配置器已就绪');
 </script>
 </body>
 </html>

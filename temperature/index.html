@@ -245,8 +245,6 @@ td { padding: 10px; text-align: center; border-bottom: 1px solid #f1f5f9; }
 <script src="../auth.js"></script>
 </head>
 <body>
-<a href="../index.html" style="position:fixed;top:16px;left:16px;z-index:9999;background:rgba(15,23,42,0.85);color:#e2e8f0;text-decoration:none;padding:8px 16px;border-radius:8px;font-size:13px;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif;border:1px solid #334155;backdrop-filter:blur(8px);transition:all 0.2s" onmouseover="this.style.background='rgba(37,99,235,0.9)';this.style.borderColor='#2563eb'" onmouseout="this.style.background='rgba(15,23,42,0.85)';this.style.borderColor='#334155'">← 返回工具箱</a>
-
 <div class="header" id="top">
     <h1>2025-2026 全球城市气温对比分析报告</h1>
     <p class="subtitle">数据范围：2025年1月 - 2026年6月 | 数据来源：Open-Meteo Archive API | 报告创建：2026年6月7日 | 持续更新...</p>
@@ -254,6 +252,7 @@ td { padding: 10px; text-align: center; border-bottom: 1px solid #f1f5f9; }
 
 <div class="nav-bar">
     <div class="nav-left">
+        <a href="../index.html" style="background:#334155;color:#fff;border:none;padding:8px 16px;border-radius:20px;font-size:13px;text-decoration:none;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all 0.2s;display:inline-block" onmouseover="this.style.background='#2563eb'" onmouseout="this.style.background='#334155'">← 工具箱</a>
         <button class="nav-shortcut" onclick="scrollToSection('top')" id="navBtn-top">&#8593; 顶部</button>
         <button class="nav-shortcut" onclick="scrollToSection('live-weather')" id="navBtn-live-weather">&#x1F4CA; 看板</button>
         <button class="nav-shortcut" onclick="scrollToSection('us-map')" id="navBtn-us-map">&#x1F5FA; 地图</button>
@@ -566,10 +565,26 @@ var CITY_DATA_CACHE = {};
 function getCityData(key) {
     if (CITY_DATA_CACHE[key]) return CITY_DATA_CACHE[key];
     var el = document.getElementById('cityDataRaw');
-    if (!el) return null;
-    var allData = JSON.parse(el.textContent);
-    CITY_DATA_CACHE[key] = allData[key];
-    return CITY_DATA_CACHE[key];
+    if (el) {
+        var allData = JSON.parse(el.textContent);
+        if (allData[key]) {
+            CITY_DATA_CACHE[key] = allData[key];
+            return CITY_DATA_CACHE[key];
+        }
+    }
+    // New city not in cityDataRaw: generate empty placeholder with 365 dates
+    var dates = [];
+    var empty = [];
+    for (var m = 1; m <= 12; m++) {
+        var days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][m - 1];
+        for (var d = 1; d <= days; d++) {
+            dates.push(String(m).padStart(2, '0') + '-' + String(d).padStart(2, '0'));
+            empty.push('null');
+        }
+    }
+    var placeholder = { dates: dates, h25: empty.slice(), h26: empty.slice(), diff: empty.slice() };
+    CITY_DATA_CACHE[key] = placeholder;
+    return placeholder;
 }
 
 // Pre-parse first 2 cities on idle
@@ -1200,8 +1215,18 @@ renderMonthlyTable();
 function applyRefreshedDailyData(key) {
     const chart = window.chartInstances[key];
     if (!chart) return;
-    const dailyMap = window.refreshedDailyData && window.refreshedDailyData[key];
-    if (!dailyMap) return;
+    var dailyMap = window.refreshedDailyData && window.refreshedDailyData[key];
+    // Fallback: read from temp cache (localStorage) if in-memory data not available
+    if (!dailyMap) {
+        var cached = readTempCache(key);
+        if (cached && cached.daily) {
+            dailyMap = {};
+            Object.keys(cached.daily).forEach(function(mmdd) {
+                if (cached.daily[mmdd] != null) dailyMap[mmdd] = cached.daily[mmdd];
+            });
+        }
+    }
+    if (!dailyMap || Object.keys(dailyMap).length === 0) return;
 
     var data = getCityData(key);
     if (!data || !data.h25 || !data.h26 || !data.dates) return;
@@ -1234,7 +1259,13 @@ const MONTHLY_CITY_COORDS = {
     "Chicago": {lat: 41.88, lon: -87.63},
     "Atlanta": {lat: 33.75, lon: -84.39},
     "Miami": {lat: 25.76, lon: -80.19},
-    "Boston": {lat: 42.36, lon: -71.06}
+    "Boston": {lat: 42.36, lon: -71.06},
+    "Berlin": {lat: 52.52437, lon: 13.41053},
+    "Ludwigslust": {lat: 53.32451, lon: 11.49714},
+    "Calgary": {lat: 51.05011, lon: -114.08529},
+    "London": {lat: 51.50853, lon: -0.12574},
+    "Morayfield": {lat: -27.10876, lon: 152.94907},
+    "Dubai": {lat: 25.07725, lon: 55.30927}
 };
 
 const STATIC_2025 = {
