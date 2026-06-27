@@ -42,6 +42,10 @@
     '<input id="authPwd" type="password" placeholder="输入密码" autofocus style="width:100%;padding:14px 18px;border:1px solid #334155;border-radius:12px;background:#1e293b;color:#e2e8f0;font-size:16px;outline:none;text-align:center;letter-spacing:2px;box-sizing:border-box">' +
     '<div id="authError" style="font-size:13px;color:#ef4444;margin-top:10px;min-height:20px"></div>' +
     '<button id="authBtn" style="width:100%;margin-top:14px;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;font-size:16px;font-weight:600;cursor:pointer">验证进入</button>' +
+    '<div id="googleLoginSection" style="display:none;margin-top:20px">' +
+    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px"><div style="flex:1;height:1px;background:#334155"></div><span style="font-size:12px;color:#64748b">或</span><div style="flex:1;height:1px;background:#334155"></div></div>' +
+    '<div id="g_id_signin" style="display:flex;justify-content:center"></div>' +
+    '</div>' +
     '</div></div>';
 
   document.addEventListener('DOMContentLoaded', function() {
@@ -78,5 +82,11 @@
     document.getElementById('authPwd').addEventListener('keydown', function(e) {
       if (e.key === 'Enter') checkPwd();
     });
+
+    // Google 登录区域展示
+    if (window.MAKE10B_GOOGLE_CLIENT_ID) {
+      var gs = document.getElementById('googleLoginSection');
+      if (gs) gs.style.display = 'block';
+    }
   });
 })();
